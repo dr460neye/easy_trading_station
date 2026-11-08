@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "easy_npc_trading_station:station_futuristic",
+    "easy_npc_trading_station:station_stone",
+    "easy_npc_trading_station:station_oak",
+    "easy_npc_trading_station:station_spruce",
+    "easy_npc_trading_station:station_birch",
+    "easy_npc_trading_station:station_jungle",
+    "easy_npc_trading_station:station_acacia",
+    "easy_npc_trading_station:station_dark_oak",
+    "easy_npc_trading_station:station_mangrove",
+    "easy_npc_trading_station:station_cherry",
+    "easy_npc_trading_station:station_bamboo",
+    "easy_npc_trading_station:station_crimson",
+    "easy_npc_trading_station:station_warped"
+  ]
+}

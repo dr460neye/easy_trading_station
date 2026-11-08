@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "GGG",
+    "G G",
+    "PPP"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "P": "minecraft:dark_oak_planks"
+  },
+  "result": {
+    "id": "easy_npc_trading_station:station_dark_oak",
+    "count": 1
+  }
+}

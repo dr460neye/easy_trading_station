@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "GGG",
+    "G G",
+    "PPP"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "P": "minecraft:stone"
+  },
+  "result": {
+    "id": "easy_npc_trading_station:station_stone",
+    "count": 1
+  }
+}

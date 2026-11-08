@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "easy_npc_trading_station:item/station_bamboo"
+  }
+}

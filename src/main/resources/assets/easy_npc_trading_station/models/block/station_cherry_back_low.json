@@ -1,0 +1,11 @@
+{
+  "parent": "easy_npc_trading_station:block/station_back_low_medieval",
+  "textures": {
+    "base": "minecraft:block/cherry_planks",
+    "glass": {
+      "force_translucent": true,
+      "sprite": "minecraft:block/glass"
+    },
+    "podium": "minecraft:block/smooth_stone"
+  }
+}

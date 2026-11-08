@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,part=front_low": {
+      "model": "easy_npc_trading_station:block/station_acacia_front_low"
+    },
+    "facing=north,part=back_low": {
+      "model": "easy_npc_trading_station:block/station_acacia_back_low"
+    },
+    "facing=north,part=front_high": {
+      "model": "easy_npc_trading_station:block/station_acacia_front_high"
+    },
+    "facing=north,part=back_high": {
+      "model": "easy_npc_trading_station:block/station_acacia_back_high"
+    },
+    "facing=east,part=front_low": {
+      "model": "easy_npc_trading_station:block/station_acacia_front_low",
+      "y": 90
+    },
+    "facing=east,part=back_low": {
+      "model": "easy_npc_trading_station:block/station_acacia_back_low",
+      "y": 90
+    },
+    "facing=east,part=front_high": {
+      "model": "easy_npc_trading_station:block/station_acacia_front_high",
+      "y": 90
+    },
+    "facing=east,part=back_high": {
+      "model": "easy_npc_trading_station:block/station_acacia_back_high",
+      "y": 90
+    },
+    "facing=south,part=front_low": {
+      "model": "easy_npc_trading_station:block/station_acacia_front_low",
+      "y": 180
+    },
+    "facing=south,part=back_low": {
+      "model": "easy_npc_trading_station:block/station_acacia_back_low",
+      "y": 180
+    },
+    "facing=south,part=front_high": {
+      "model": "easy_npc_trading_station:block/station_acacia_front_high",
+      "y": 180
+    },
+    "facing=south,part=back_high": {
+      "model": "easy_npc_trading_station:block/station_acacia_back_high",
+      "y": 180
+    },
+    "facing=west,part=front_low": {
+      "model": "easy_npc_trading_station:block/station_acacia_front_low",
+      "y": 270
+    },
+    "facing=west,part=back_low": {
+      "model": "easy_npc_trading_station:block/station_acacia_back_low",
+      "y": 270
+    },
+    "facing=west,part=front_high": {
+      "model": "easy_npc_trading_station:block/station_acacia_front_high",
+      "y": 270
+    },
+    "facing=west,part=back_high": {
+      "model": "easy_npc_trading_station:block/station_acacia_back_high",
+      "y": 270
+    }
+  }
+}

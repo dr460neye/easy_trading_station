@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "GGG",
+    "GEG",
+    "III"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "E": "minecraft:ender_pearl",
+    "I": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "easy_npc_trading_station:station_futuristic",
+    "count": 1
+  }
+}

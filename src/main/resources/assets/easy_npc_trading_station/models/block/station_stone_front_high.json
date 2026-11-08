@@ -1,0 +1,11 @@
+{
+  "parent": "easy_npc_trading_station:block/station_front_high_medieval",
+  "textures": {
+    "base": "minecraft:block/stone",
+    "glass": {
+      "force_translucent": true,
+      "sprite": "minecraft:block/glass"
+    },
+    "podium": "minecraft:block/smooth_stone"
+  }
+}
