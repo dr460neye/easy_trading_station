@@ -14,6 +14,11 @@ VERSIONS = os.path.join(INSTALL, "versions")
 LIBS = os.path.join(INSTALL, "libraries")
 world = sys.argv[1] if len(sys.argv) > 1 else CONFIG.get("world", "New World")
 
+SAVES = os.path.join(INST, "saves")
+if not os.path.isdir(os.path.join(SAVES, world)):
+    existing = [d for d in os.listdir(SAVES)] if os.path.isdir(SAVES) else []
+    sys.exit(f"World folder '{world}' not found in {SAVES}. Existing: {existing}")
+
 def load(v):
     return json.load(open(os.path.join(VERSIONS, v, v + ".json"), encoding="utf-8"))
 
@@ -74,8 +79,11 @@ vars_ = {
     "assets_root": os.path.join(INSTALL, "assets"), "assets_index_name": vanilla["assetIndex"]["id"],
     "auth_uuid": uid, "auth_access_token": "0", "clientid": "", "auth_xuid": "0",
     "version_type": "release", "quickPlaySingleplayer": world,
+    "quickPlayPath": os.path.join("quickPlay", "dev-launch.json"),
 }
-features = {"is_quick_play_singleplayer": True}
+# the official launcher always sends --quickPlayPath together with --quickPlaySingleplayer
+features = {"is_quick_play_singleplayer": True, "has_quick_plays_support": True}
+os.makedirs(os.path.join(INST, "quickPlay"), exist_ok=True)
 
 def expand(args):
     out = []
