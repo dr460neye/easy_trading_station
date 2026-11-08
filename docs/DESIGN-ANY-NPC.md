@@ -112,8 +112,9 @@ with a new one. In a session that would create a second entity and lose the stat
   (`match=MODE`, same grammar as `typeOverrides`).
 - Never by default: players, bosses, tamed pets, anything with an owner, dragons and other large
   creatures (Ice and Fire), hostile mobs.
-- Clone mode stays **off for non-Easy-NPC entities** by default: cloning a villager multiplies
-  trades (trade farming). Config can enable it.
+- **Standard villagers can not be cloned** (decision of the maintainer; also avoids conflicts with
+  Easy Villagers). CLONE and BOTH act as CAPTURE for them, without a config switch. Other
+  non-Easy-NPC entities: clone off by default.
 
 ### 5. Workstations and upgrade tier (S7.4, M8)
 
@@ -133,8 +134,19 @@ have more than one workstation" needs; the requirement parser already handles al
 - `requiredWorkstations` stays the override: an entry by profession id or by name replaces the
   registry result (for example when a pack wants a different block).
 - Professions without a job site (nitwit, unemployed) fall back to the default workstation.
-- Upgrade tier (M8): villagers and wandering traders level 0, everything else level 1, set by the
-  `match=LEVEL` list.
+- Station upgrades (M8, decisions of the maintainer): a station has **one upgrade slot**; the
+  installed upgrade decides which NPC class the station can host.
+
+  | Installed upgrade | Station can host |
+  |-------------------|------------------|
+  | none | standard (vanilla) villagers, including modded professions |
+  | Advanced NPC Trading Station | Easy NPCs |
+  | Wandering Trader upgrade | wandering traders; their offers are reset once per day |
+  | Bartering upgrade (long list, later) | piglins (bartering) |
+
+  The requirement per NPC is a config list `match=UPGRADE` (entity type id or part of the name,
+  first match wins). Defaults: Easy NPC types -> advanced, `minecraft:wandering_trader` ->
+  wandering, `minecraft:villager` -> none.
 
 ### 6. Safety and exploits
 
@@ -166,6 +178,16 @@ static pose.
   read as before.
 - Mixed versions of mod on client and server: the station menu is not changed by this plan.
 - Config: new options with defaults that keep today's behaviour for Easy NPCs.
+
+## Easy Villagers (installed in the test pack)
+
+Easy Villagers (`easy_villagers`, 1.1.42 for 26.1.2) overlaps with this plan: it has Trader and
+Auto Trader blocks that hold a villager, and its `VillagerEvents.onClick` listens to
+`PlayerInteractEvent.EntityInteract` and picks a villager up on Shift + right-click (checked in the
+bytecode: it reads `isShiftKeyDown` and cancels the event; which item is in the hand is not
+verified). Decision of the maintainer: standard villager support must check whether Easy Villagers
+is installed (S7.11). Because our catcher listener runs early (HIGH) and cancels the event, the
+catcher in hand wins over the pickup; that is not tested in game.
 
 ## Open decisions
 
