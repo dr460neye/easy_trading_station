@@ -30,9 +30,27 @@ public final class VillagerWorkstations {
     return parsed != null ? parsed : Identifier.withDefaultNamespace("none");
   }
 
+  /**
+   * "unemployed" for a villager without profession, "nitwit" for a nitwit, "" otherwise. These
+   * villagers have no trades; the station shows a sign and does not start a session or look for blocks.
+   */
+  public static String idleKind(CompoundTag tag) {
+    String path = professionOf(tag).getPath();
+    return switch (path) {
+      case "none" -> "unemployed";
+      case "nitwit" -> "nitwit";
+      default -> "";
+    };
+  }
+
+  /** Same for stored station data of a villager; "" for every other entity. */
+  public static String idleKind(PresetData data) {
+    return data != null && data.entityType() == EntityType.VILLAGER ? idleKind(data.data()) : "";
+  }
+
   /** The requirement of a stored villager; null for other entities and for villagers without a job site. */
   public static synchronized WorkstationRequirement requirementFor(PresetData data) {
-    if (data == null || data.entityType() != EntityType.VILLAGER) {
+    if (data == null || data.entityType() != EntityType.VILLAGER || !idleKind(data.data()).isEmpty()) {
       return null;
     }
     Identifier profession = professionOf(data.data());

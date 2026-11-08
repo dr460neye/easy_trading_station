@@ -102,6 +102,13 @@ public final class StationSessions {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.busy"));
       return;
     }
+    String idle = station.getIdleKind();
+    if (!idle.isEmpty()) {
+      // no profession, no trades: say so instead of starting a session (the villager would shake its head)
+      player.sendOverlayMessage(
+          Component.translatable("message.easy_npc_trading_station.idle_" + idle));
+      return;
+    }
     if (!station.isNpcActive()) {
       sendMissingWorkstation(player, station);
       return;

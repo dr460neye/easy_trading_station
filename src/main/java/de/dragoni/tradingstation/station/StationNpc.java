@@ -33,6 +33,7 @@ public final class StationNpc {
       npc.getEasyNPCPresetData().importPresetData(tag);
     } else {
       entity.load(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag));
+      entity.removeTag(StationSessions.TRANSIENT_TAG);
     }
     return entity;
   }
@@ -84,7 +85,15 @@ public final class StationNpc {
     var output =
         net.minecraft.world.level.storage.TagValueOutput.createWithContext(
             ProblemReporter.DISCARDING, entity.level().registryAccess());
+    // the marker of a running station session must not be stored, or the released entity is removed again
+    boolean marked = entity.entityTags().contains(StationSessions.TRANSIENT_TAG);
+    if (marked) {
+      entity.removeTag(StationSessions.TRANSIENT_TAG);
+    }
     entity.saveWithoutId(output);
+    if (marked) {
+      entity.addTag(StationSessions.TRANSIENT_TAG);
+    }
     net.minecraft.nbt.CompoundTag tag = output.buildResult();
     tag.remove("UUID");
     tag.remove("Brain");
@@ -108,13 +117,30 @@ public final class StationNpc {
     return new de.markusbordihn.easynpc.data.preset.PresetData(to.entityType(), tag);
   }
 
+  /**
+   * A villager without experience, level 1 and without a job site loses its profession. A freshly
+   * released villager has no job site yet, so it gets one point of experience (what the first trade
+   * would give) and keeps the profession it had.
+   */
+  static de.markusbordihn.easynpc.data.preset.PresetData lockProfession(
+      de.markusbordihn.easynpc.data.preset.PresetData data) {
+    if (data.entityType() != net.minecraft.world.entity.EntityType.VILLAGER
+        || !VillagerWorkstations.idleKind(data.data()).isEmpty()
+        || data.data().getIntOr("Xp", 0) > 0) {
+      return data;
+    }
+    net.minecraft.nbt.CompoundTag tag = data.data().copy();
+    tag.putInt("Xp", 1);
+    return new de.markusbordihn.easynpc.data.preset.PresetData(data.entityType(), tag);
+  }
+
   /** Releases a stored non-Easy-NPC entity at the position. */
   public static boolean spawnGeneric(
       net.minecraft.server.level.ServerLevel level,
       de.markusbordihn.easynpc.data.preset.PresetData data,
       BlockPos pos,
       float yaw) {
-    Entity entity = create(level, data, EntitySpawnReason.SPAWN_ITEM_USE);
+    Entity entity = create(level, lockProfession(data), EntitySpawnReason.SPAWN_ITEM_USE);
     if (entity == null) {
       return false;
     }

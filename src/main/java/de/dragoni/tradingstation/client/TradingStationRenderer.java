@@ -116,7 +116,21 @@ public class TradingStationRenderer
     }
 
     state.sign = java.util.List.of();
-    if (station.hasNpc() && station.getMissingLabel() != null) {
+    if (station.hasNpc() && !station.getIdleKind().isEmpty()) {
+      var font = net.minecraft.client.Minecraft.getInstance().font;
+      var lines = new java.util.ArrayList<net.minecraft.util.FormattedCharSequence>();
+      lines.add(
+          net.minecraft.network.chat.Component.translatable("sign.easy_npc_trading_station.idle.title")
+              .withStyle(net.minecraft.ChatFormatting.BOLD, net.minecraft.ChatFormatting.GOLD)
+              .getVisualOrderText());
+      lines.addAll(
+          font.split(
+              net.minecraft.network.chat.Component.translatable(
+                  "sign.easy_npc_trading_station.idle." + station.getIdleKind()),
+              70));
+      state.sign = lines;
+      state.signAngle = (float) Math.toDegrees(Math.atan2(facing.getStepX(), facing.getStepZ()));
+    } else if (station.hasNpc() && station.getMissingLabel() != null) {
       var font = net.minecraft.client.Minecraft.getInstance().font;
       var lines = new java.util.ArrayList<net.minecraft.util.FormattedCharSequence>();
       lines.add(

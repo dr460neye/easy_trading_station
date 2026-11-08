@@ -40,5 +40,10 @@
   "block.easy_npc_trading_station.station_cherry": "Cherry Trading Station",
   "block.easy_npc_trading_station.station_bamboo": "Bamboo Trading Station",
   "block.easy_npc_trading_station.station_crimson": "Crimson Trading Station",
-  "block.easy_npc_trading_station.station_warped": "Warped Trading Station"
+  "block.easy_npc_trading_station.station_warped": "Warped Trading Station",
+  "sign.easy_npc_trading_station.idle.title": "NO JOB!",
+  "sign.easy_npc_trading_station.idle.unemployed": "Unemployed and nothing to trade. Give me a profession first.",
+  "sign.easy_npc_trading_station.idle.nitwit": "Nitwit on the clock: nothing to sell, just here for the view.",
+  "message.easy_npc_trading_station.idle_unemployed": "This villager has no profession and nothing to trade.",
+  "message.easy_npc_trading_station.idle_nitwit": "Nitwits do not trade."
 }

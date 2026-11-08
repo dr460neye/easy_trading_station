@@ -27,4 +27,21 @@ class VillagerWorkstationsTest {
     data.put("VillagerData", villager);
     assertEquals(Identifier.parse("minecraft:none"), VillagerWorkstations.professionOf(data));
   }
+
+  private static CompoundTag villagerWith(String profession) {
+    CompoundTag data = new CompoundTag();
+    CompoundTag villager = new CompoundTag();
+    villager.putString("profession", profession);
+    data.put("VillagerData", villager);
+    return data;
+  }
+
+  @Test
+  void villagersWithoutTradesAreIdle() {
+    assertEquals("unemployed", VillagerWorkstations.idleKind(villagerWith("minecraft:none")));
+    assertEquals("unemployed", VillagerWorkstations.idleKind(new CompoundTag()));
+    assertEquals("nitwit", VillagerWorkstations.idleKind(villagerWith("minecraft:nitwit")));
+    assertEquals("", VillagerWorkstations.idleKind(villagerWith("minecraft:farmer")));
+    assertEquals("", VillagerWorkstations.idleKind(villagerWith("irons_jewelry:jeweler")));
+  }
 }

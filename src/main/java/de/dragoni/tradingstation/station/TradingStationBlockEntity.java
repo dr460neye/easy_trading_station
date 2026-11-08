@@ -38,6 +38,7 @@ public class TradingStationBlockEntity extends BlockEntity {
   private Identifier displayWorkstation;
   private boolean inUse;
   private net.minecraft.network.chat.Component missingLabel;
+  private String idleKind = "";
 
   /** Client only: cached non-ticking entity for the renderer, rebuilt when {@link #version} changes. */
   public Entity displayEntity;
@@ -105,6 +106,14 @@ public class TradingStationBlockEntity extends BlockEntity {
   private boolean requirementMet() {
     WorkstationRequirement requirement = requirement();
     return requirement == null || requirement.matches(workstation);
+  }
+
+  /** Villager without trades ("unemployed" or "nitwit"): server computes it, the client gets a copy. */
+  public String getIdleKind() {
+    if (level != null && !level.isClientSide()) {
+      return VillagerWorkstations.idleKind(npc);
+    }
+    return idleKind;
   }
 
   /** Client: set while the NPC's required workstation is missing (text for the strike sign). */
@@ -185,6 +194,9 @@ public class TradingStationBlockEntity extends BlockEntity {
 
   /** Server side: the block shown on the workstation cell. */
   private Identifier effectiveWorkstation() {
+    if (!getIdleKind().isEmpty()) {
+      return null; // a sign is shown, no workstation
+    }
     if (!requirementMet()) {
       return null; // the strike sign is shown instead
     }
@@ -218,6 +230,10 @@ public class TradingStationBlockEntity extends BlockEntity {
       if (display != null) {
         output.putString("DisplayWorkstation", display.toString());
       }
+      String idle = getIdleKind();
+      if (!idle.isEmpty()) {
+        output.putString("IdleKind", idle);
+      }
       WorkstationRequirement requirement = requirement();
       if (requirement != null && !requirement.matches(workstation)) {
         output.store("MissingLabel", net.minecraft.network.chat.ComponentSerialization.CODEC, requirement.displayName());
@@ -236,6 +252,7 @@ public class TradingStationBlockEntity extends BlockEntity {
     }
     displayWorkstation = input.getString("DisplayWorkstation").map(Identifier::tryParse).orElse(null);
     inUse = input.getBooleanOr("InUse", false);
+    idleKind = input.getStringOr("IdleKind", "");
     missingLabel = input.read("MissingLabel", net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(null);
     version++;
   }

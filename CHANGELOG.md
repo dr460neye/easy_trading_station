@@ -22,6 +22,7 @@ First release for Minecraft 26.1.2, NeoForge 26.1.2.126, Easy NPC 7.18.0+.
 - **Trading Station**: 1 × 2 × 2 glass booth with podium, access window and workstation spot. 13 styles (futuristic, stone, 11 vanilla woods); stations for the woods of other mods appear automatically.
 - **Station menu** (Shift + right-click) with a catcher slot, a workstation slot and an upgrade slot.
 - **Station upgrades**: Easy NPCs need the *Advanced NPC Trading Station Upgrade*, wandering traders the *Wandering Trader Upgrade* (new offers once a day). Standard villagers need none. Recipes and the requirement per NPC are configurable; right-click a station with an upgrade to install it.
+- Villagers without a profession and nitwits show a sign in the station instead of shaking their head (no session, no block checks). A released villager keeps its profession.
 - **Villager workstations from game data**: a villager needs the job site block of its profession (all alternatives count), so modded professions work without any setup. Villagers restock up to twice a day. They are never cloned while Easy Villagers is installed.
 - **Per-NPC workstations** for Easy NPCs: `requiredWorkstations` config (match by entity type or name, item ids, wildcards, item tags, label). Missing workstation: strike sign in the station and a chat hint naming the missing block.
 - Interaction goes through the normal right-click event, so shop scripts (KubeJS) keep working.
