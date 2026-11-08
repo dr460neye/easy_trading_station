@@ -15,7 +15,7 @@ Values for the project form. Items marked **TODO** need a decision or an in-game
 | Mod loader | NeoForge (26.1.2.126+) |
 | Java | 25 |
 | Environment | Client and Server (required on both) |
-| License | **TODO** (currently *All Rights Reserved* in `gradle.properties`) |
+| License | MIT |
 | Source | https://github.com/dr460neye/easy_trading_station |
 | Issues | https://github.com/dr460neye/easy_trading_station/issues |
 

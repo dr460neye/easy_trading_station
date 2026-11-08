@@ -62,5 +62,5 @@ without an entry use a fallback (Crafting Table by default). The catcher mode ca
 
 - Only Easy NPC entities can be caught right now; other mobs are planned.
 - Needs to be installed on server and client.
-- Source code and issue tracker:
+- Licensed under MIT. Source code and issue tracker:
   [github.com/dr460neye/easy_trading_station](https://github.com/dr460neye/easy_trading_station)

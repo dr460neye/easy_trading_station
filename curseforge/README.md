@@ -22,8 +22,7 @@ folder is part of the mod jar.
 
 ## Notes
 
-- Decide the license first (`gradle.properties` says *All Rights Reserved* right now); CurseForge
-  asks for it.
+- License is MIT (`../LICENSE`); pick *MIT License* in the CurseForge license field.
 - The mod id stays `easy_npc_trading_station`, the display name is **Easy Trading Station**.
 - Keep `description.md` and `../docs/CONFIGURATION.md` in sync; the description only contains the
   short version and links to the full guide on GitHub.

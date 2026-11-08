@@ -98,5 +98,4 @@ The jar is written to `build/libs/`. `./gradlew runClient` starts a development 
 
 ## License
 
-Not decided yet. `gradle.properties` currently says *All Rights Reserved*; add a `LICENSE` file
-and update `mod_license` before publishing releases.
+[MIT](LICENSE). Free to use in modpacks, forks and derived works; keep the copyright notice.
