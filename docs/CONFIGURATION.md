@@ -237,7 +237,7 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
 |------|--------|
 | NPC Catcher | 3 string, 2 iron ingots, 1 ender pearl |
 | Trading Station (stone, woods, modded woods) | top row 3 glass, middle row emerald + eye of ender + diamond, bottom row 3 planks / stone (the variant's own block) |
-| Trading Station futuristic | same, with 3 iron blocks in the bottom row |
+| Trading Station futuristic | same, with 3 iron ingots in the bottom row |
 
 ```toml
 [recipes]
@@ -247,7 +247,7 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
   stations = true                      # false: no crafting recipes for any station
   stationPattern = ["GGG", "EYD", "PPP"]   # P = the variant's own block (planks, stone, ...)
   stationKeys = ["G=minecraft:glass", "E=minecraft:emerald", "Y=minecraft:ender_eye", "D=minecraft:diamond"]
-  futuristicBase = "minecraft:iron_block"  # what P is for the futuristic station
+  futuristicBase = "minecraft:iron_ingot"  # what P is for the futuristic station
 ```
 
 Keys are `X=item_id` or `X=#item_tag`. `P` in the station pattern is reserved. A wrong value is

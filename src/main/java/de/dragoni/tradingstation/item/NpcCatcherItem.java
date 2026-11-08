@@ -53,6 +53,7 @@ public class NpcCatcherItem extends Item {
       return InteractionResult.PASS;
     }
     if (isProtected(player, target)) {
+      TradingStationMod.LOGGER.info("Capture denied: {} may not change blocks at {}", player.getName().getString(), target.blockPosition());
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.no_access"));
       return InteractionResult.FAIL;
     }

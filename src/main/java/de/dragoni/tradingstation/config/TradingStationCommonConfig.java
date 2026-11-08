@@ -30,7 +30,7 @@ public class TradingStationCommonConfig {
           "E=minecraft:emerald",
           "Y=minecraft:ender_eye",
           "D=minecraft:diamond");
-  private static final String DEFAULT_FUTURISTIC_BASE = "minecraft:iron_block";
+  private static final String DEFAULT_FUTURISTIC_BASE = "minecraft:iron_ingot";
 
   static {
     ModConfigSpec.Builder builder = new ModConfigSpec.Builder();

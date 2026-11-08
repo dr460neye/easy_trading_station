@@ -26,7 +26,7 @@ release. Put the most important entries first and keep a bullet's first sentence
 
 ### Changed
 - Crafting recipes of the catcher and all stations can be changed in `easy_npc_trading_station-common.toml` (pattern, keys, or turned off). The recipes are written when the game loads, no longer shipped as fixed files.
-- Recipes are more expensive. Catcher: 3 string, 2 iron ingots, 1 ender pearl. Stations: 3 glass, emerald, eye of ender, diamond and 3 planks or stone (futuristic: 3 iron blocks).
+- Recipes are more expensive. Catcher: 3 string, 2 iron ingots, 1 ender pearl. Stations: 3 glass, emerald, eye of ender, diamond and 3 planks or stone (futuristic: 3 iron ingots).
 - Station menu: the two slots are stacked with their labels to the right, so the texts no longer overlap.
 - When a released NPC can not be spawned, the reason is written to `latest.log`.
 

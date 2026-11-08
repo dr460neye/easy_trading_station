@@ -36,7 +36,7 @@ in your world. Perfect for trading halls and for modpacks with quest or shop NPC
 
 1. Craft an **NPC Catcher** (3 string, 2 iron ingots, 1 ender pearl) and right-click an Easy NPC.
 2. Craft and place a **Trading Station** (3 glass, emerald, eye of ender, diamond and 3 planks / stone; the futuristic one uses 3 iron
-   blocks instead).
+   ingots instead).
 3. Right-click the station with the filled catcher, or Shift + right-click for the menu.
 4. Put the NPC's workstation into the workstation slot.
 5. Right-click the station to trade or talk.
