@@ -6,7 +6,8 @@ folder is part of the mod jar.
 | File | Use |
 |------|-----|
 | [`project-info.md`](project-info.md) | Fields of the CurseForge project form: name, slug, summary, categories, tags, links, dependencies. |
-| [`description.md`](description.md) | The long project description (copy into the *Description* editor; Markdown, switch the editor to Markdown or paste as rich text). |
+| [`description.md`](description.md) | The long project description (source text). |
+| [`description.html`](description.html) | The same text as HTML, made by `python tools/curseforge_description.py`. CurseForge has no Markdown input: paste it into the *Description* editor in source mode (`<>`). Regenerate after every change of `description.md`. |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | The changelog (one section per version); the release pipeline uploads the matching section with each file. |
 | [`images/`](images) | Images for the gallery and the description: in-game screenshots (`title-screen.png`, `all_trading_station.png`) and two technical sketches. The list of images that are still missing is in `project-info.md`. |
 
