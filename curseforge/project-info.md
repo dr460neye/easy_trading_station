@@ -62,5 +62,3 @@ easy npc, npc, trading, villager, shop, station, workstation, modpack, kubejs fr
 ## Credits
 
 Easy NPC by Markus Bordihn. Mod by dr460neye.
-
-*(Check the exact author name and credits before publishing.)*
