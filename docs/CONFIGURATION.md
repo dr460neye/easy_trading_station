@@ -22,7 +22,7 @@ workstation** and **how the NPC Catcher behaves** is plain config, no scripting 
 | File | Type | Purpose |
 |------|------|---------|
 | `easy_npc_trading_station-server.toml` | server config | Catcher modes, required workstations (the file you will edit most). |
-| `easy_npc_trading_station-common.toml` | common config | Recipe switch for generated station variants. |
+| `easy_npc_trading_station-common.toml` | common config | Crafting recipes of the catcher and the stations. |
 | `config/easy_npc_trading_station-extra-variants.txt` | plain text | Extra station variants (created on first start). |
 
 The server config belongs to the world: in a normal setup it is `<world>/serverconfig/`, on a
@@ -231,7 +231,7 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
 
 ## Recipes for modpack makers
 
-**Default recipes** (all can be replaced with a datapack or KubeJS recipe of the same id):
+**Crafting recipes** are set in `easy_npc_trading_station-common.toml` (restart needed). The defaults:
 
 | Item | Recipe |
 |------|--------|
@@ -239,6 +239,22 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
 | Trading Station (stone, woods, modded woods) | top row 3 glass, middle row emerald + eye of ender + diamond, bottom row 3 planks / stone (the variant's own block) |
 | Trading Station futuristic | same, with 3 iron blocks in the bottom row |
 
+```toml
+[recipes]
+  catcher = true                       # false: no crafting recipe for the catcher
+  catcherPattern = [" SS", "IPS", "I  "]   # up to 3 rows of up to 3 characters, space = empty
+  catcherKeys = ["S=minecraft:string", "I=minecraft:iron_ingot", "P=minecraft:ender_pearl"]
+  stations = true                      # false: no crafting recipes for any station
+  stationPattern = ["GGG", "EYD", "PPP"]   # P = the variant's own block (planks, stone, ...)
+  stationKeys = ["G=minecraft:glass", "E=minecraft:emerald", "Y=minecraft:ender_eye", "D=minecraft:diamond"]
+  futuristicBase = "minecraft:iron_block"  # what P is for the futuristic station
+```
+
+Keys are `X=item_id` or `X=#item_tag`. `P` in the station pattern is reserved. A wrong value is
+ignored: the default recipe is used and `latest.log` says so. The stations of other mods' woods use
+the same pattern. To give one station its own recipe, set `[variants] dynamicRecipes = false` or
+replace the recipe with a datapack or KubeJS recipe of the id `easy_npc_trading_station:station_<variant>` /
+`easy_npc_trading_station:npc_catcher`.
 
 **Find the id or name of an NPC.** Look at it in the game with `/data get entity @e[type=easy_npc:humanoid,limit=1,sort=nearest]`
 (`CustomName` is the name, the type id is the part before the `[`). With `F3 + H` the item ids of

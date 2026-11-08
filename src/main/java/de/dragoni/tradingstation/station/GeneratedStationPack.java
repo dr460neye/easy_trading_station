@@ -142,6 +142,7 @@ public class GeneratedStationPack {
             .append(displayName(variant))
             .append("\",\n");
       }
+      writeRecipes();
       if (any) {
         put("data/minecraft/tags/block/mineable/pickaxe.json",
             "{\"replace\":false,\"values\":[" + String.join(",", pickaxe) + "]}");
@@ -208,21 +209,27 @@ public class GeneratedStationPack {
             + "\"name\":\"" + blockId + "\"}],\"conditions\":[{\"condition\":\"minecraft:block_state_property\","
             + "\"block\":\"" + blockId + "\",\"properties\":{\"part\":\"front_low\"}},"
             + "{\"condition\":\"minecraft:survives_explosion\"}]}]}");
-    if (TradingStationCommonConfig.dynamicRecipes()) {
-      // same recipe as the built-in stations: glass on top, valuables in the middle, base below
-      String key =
-          "{\"G\":\"minecraft:glass\",\"E\":\"minecraft:emerald\",\"Y\":\"minecraft:ender_eye\","
-              + "\"D\":\"minecraft:diamond\",\"P\":\""
-              + (variant.futuristic() ? "minecraft:iron_block" : variant.baseBlock())
-              + "\"}";
-      String pattern = "[\"GGG\",\"EYD\",\"PPP\"]";
-      put(
-          "data/" + NS + "/recipe/station_" + id + ".json",
-          "{\"type\":\"minecraft:crafting_shaped\",\"category\":\"building\",\"pattern\":" + pattern
-              + ",\"key\":" + key + ",\"result\":{\"id\":\"" + blockId + "\",\"count\":1}}");
-    }
     TradingStationMod.LOGGER.info(
         "Generated assets for station variant '{}' (texture {})", id, base.toLowerCase(Locale.ROOT));
+  }
+
+  /** Recipes of the catcher and of every station, built from the COMMON config. */
+  private static void writeRecipes() throws IOException {
+    var catcher = TradingStationCommonConfig.catcherRecipe(NS + ":npc_catcher");
+    if (catcher.isPresent()) {
+      put("data/" + NS + "/recipe/npc_catcher.json", catcher.get());
+    }
+    for (StationVariant variant : ModBlocks.STATIONS.keySet()) {
+      if (!variant.builtIn() && !TradingStationCommonConfig.dynamicRecipes()) {
+        continue;
+      }
+      var recipe =
+          TradingStationCommonConfig.stationRecipe(
+              variant.baseBlock().toString(), variant.futuristic(), NS + ":" + variant.blockName());
+      if (recipe.isPresent()) {
+        put("data/" + NS + "/recipe/station_" + variant.id() + ".json", recipe.get());
+      }
+    }
   }
 
   private static void put(String relative, String content) throws IOException {

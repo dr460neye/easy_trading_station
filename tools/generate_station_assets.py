@@ -1,4 +1,4 @@
-"""Generates blockstates, block models, loot tables, recipes, tags and lang entries for all built-in
+"""Generates blockstates, block models, loot tables, tags and lang entries for all built-in
 station variants. Run from the project root: python tools/generate_station_assets.py
 Item icons come from tools/generate_station_icons.ps1."""
 import json
@@ -123,14 +123,6 @@ def main():
                            {"condition": "minecraft:block_state_property", "block": block_id,
                             "properties": {"part": "front_low"}},
                            {"condition": "minecraft:survives_explosion"}]}]})
-        # glass on top, the valuables in the middle row, the base material below
-        key = {"G": "minecraft:glass", "E": "minecraft:emerald", "Y": "minecraft:ender_eye",
-               "D": "minecraft:diamond",
-               "P": "minecraft:iron_block" if fut else f"minecraft:{base}"}
-        pattern = ["GGG", "EYD", "PPP"]
-        write(os.path.join(DATA, "recipe", f"station_{vid}.json"),
-              {"type": "minecraft:crafting_shaped", "category": "building", "pattern": pattern,
-               "key": key, "result": {"id": block_id, "count": 1}})
         en_lang[f"block.{NS}.station_{vid}"] = (
             "Futuristic Trading Station" if fut else f"{en} Trading Station")
         de_lang[f"block.{NS}.station_{vid}"] = (
