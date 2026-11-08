@@ -58,6 +58,7 @@ There are two kinds of builds, both made by GitHub Actions from a pushed commit:
 | GitHub | pre-release | release (marked latest) |
 | CurseForge | never by itself; on request as **Beta** | **always**, as Release |
 | Release notes | `[Unreleased]` section of `CHANGELOG.md` | section `[1.1.0]` of `CHANGELOG.md` (the run stops if it is missing or empty) |
+| Where the notes go | GitHub: the whole section. CurseForge: short version (opening line + first 8 bullets, link to the GitHub release) | same |
 
 `mod_version` in `gradle.properties` always means *the next stable version*. Pre-releases are
 numbered below it (`1.1.0-beta.12` sorts before `1.1.0`).

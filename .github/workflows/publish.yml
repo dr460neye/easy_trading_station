@@ -82,14 +82,20 @@ jobs:
           TYPE: ${{ steps.meta.outputs.type }}
           BASE: ${{ steps.meta.outputs.base }}
         run: |
+          # RELEASE_NOTES.md (GitHub release): the whole section. RELEASE_NOTES_SHORT.md (CurseForge
+          # file page): lead line and the first bullets, linking to the GitHub release.
+          REPO_URL="https://github.com/$GITHUB_REPOSITORY"
+          FULL_LINK="$REPO_URL/blob/$GITHUB_SHA/CHANGELOG.md"
+          SHORT_LINK="$REPO_URL/releases/tag/${{ steps.meta.outputs.tag }}"
           if [ "$TYPE" = "release" ]; then
-            python3 tools/changelog_section.py "$VERSION" > RELEASE_NOTES.md
+            python3 tools/changelog_section.py "$VERSION" --link "$FULL_LINK" > RELEASE_NOTES.md
+            python3 tools/changelog_section.py "$VERSION" --short --link "$SHORT_LINK" > RELEASE_NOTES_SHORT.md
           else
-            {
-              echo "Automated pre-release build of commit \`${GITHUB_SHA::7}\`. Not meant for worlds you care about."
-              echo
-              (python3 tools/changelog_section.py Unreleased || python3 tools/changelog_section.py "$BASE") 2> /dev/null || true
-            } > RELEASE_NOTES.md
+            HEADER="Automated pre-release build of commit \`${GITHUB_SHA::7}\`. Not meant for worlds you care about."
+            SECTION=Unreleased
+            python3 tools/changelog_section.py Unreleased > /dev/null 2>&1 || SECTION="$BASE"
+            { echo "$HEADER"; echo; python3 tools/changelog_section.py "$SECTION" --link "$FULL_LINK" 2> /dev/null || true; } > RELEASE_NOTES.md
+            { echo "$HEADER"; echo; python3 tools/changelog_section.py "$SECTION" --short --link "$SHORT_LINK" 2> /dev/null || true; } > RELEASE_NOTES_SHORT.md
           fi
 
       - name: GitHub release
@@ -114,7 +120,7 @@ jobs:
           name: ${{ steps.meta.outputs.title }}
           version: ${{ inputs.version }}
           version-type: ${{ steps.meta.outputs.type }}
-          changelog-file: RELEASE_NOTES.md
+          changelog-file: RELEASE_NOTES_SHORT.md
           loaders: neoforge
           game-versions: ${{ steps.meta.outputs.mc }}
           java: ${{ steps.meta.outputs.java }}

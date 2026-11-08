@@ -6,9 +6,20 @@ All notable changes of this project are documented here. The format follows
 the tag is `<minecraft version>-<mod version>` (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 The text of a version section is used as the release notes on GitHub and CurseForge, so write it
-for players and modpack makers.
+for players and modpack makers. GitHub gets the whole section; CurseForge gets a short version: the
+opening line of the section plus the first 8 top-level bullets of *Added*, *Changed*, *Fixed*,
+*Removed*, *Deprecated* and *Security* (each cut at 160 characters), with a link to the GitHub
+release. Put the most important entries first and keep a bullet's first sentence self-contained.
 
 ## [Unreleased]
+
+### Added
+- **Catcher mode per NPC name**: `typeOverrides` entries now match an NPC name as well as an entity
+  type id (`"beastmaster=BOTH"`, `"wayfarer=CAPTURE"`, `"jeweler=CLONE"`). All Easy NPC humanoids
+  share one entity type, so names are the way to treat individual shopkeepers differently.
+
+### Changed
+- When a released NPC can not be spawned, the reason is written to `latest.log`.
 
 ## [1.0.0] - 2026-11-08
 

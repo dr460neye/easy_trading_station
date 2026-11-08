@@ -145,7 +145,8 @@ To add a built-in variant, add it to the generator table, rerun both and commit 
 - Small, focused commits. [Conventional Commits](https://www.conventionalcommits.org/) are
   welcome (`feat:`, `fix:`, `docs:`, `chore:`, `ci:`).
 - Anything players or modpack makers can notice goes into `CHANGELOG.md` under
-  `## [Unreleased]` in the same pull request (the text becomes the release notes).
+  `## [Unreleased]` in the same pull request (the text becomes the release notes; GitHub gets it
+  whole, CurseForge a short version of the first 8 bullets, so put the important entries first).
 - Open the pull request against `main`. CI (**Build**) must be green: compile, tests, jar and the
   generated-assets check.
 - Describe what you tested in the game. "Not tested in game" is fine, just say so.
