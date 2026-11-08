@@ -12,10 +12,12 @@ import net.minecraft.world.item.ItemStack;
 /** Two slots (NPC catcher, workstation block) plus the player inventory. */
 public class StationMenu extends AbstractContainerMenu {
 
-  public static final int NPC_X = 62;
-  public static final int WORKSTATION_X = 98;
-  public static final int SLOT_Y = 30;
-  public static final int INVENTORY_Y = 66;
+  // Slots are stacked; the screen draws each label to the right of its slot. Positions are only used
+  // on the client, so changing them does not affect servers or clients on another version.
+  public static final int SLOT_X = 8;
+  public static final int NPC_Y = 20;
+  public static final int WORKSTATION_Y = 42;
+  public static final int INVENTORY_Y = 75;
 
   private final Container container;
 
@@ -27,10 +29,10 @@ public class StationMenu extends AbstractContainerMenu {
   public StationMenu(int id, Inventory inventory, Container container) {
     super(ModMenus.STATION.get(), id);
     this.container = container;
-    addSlot(new StationSlot(container, StationContainer.NPC_SLOT, NPC_X, SLOT_Y, inventory.player));
+    addSlot(new StationSlot(container, StationContainer.NPC_SLOT, SLOT_X, NPC_Y, inventory.player));
     addSlot(
         new StationSlot(
-            container, StationContainer.WORKSTATION_SLOT, WORKSTATION_X, SLOT_Y, inventory.player));
+            container, StationContainer.WORKSTATION_SLOT, SLOT_X, WORKSTATION_Y, inventory.player));
     addStandardInventorySlots(inventory, 8, INVENTORY_Y);
   }
 

@@ -17,7 +17,7 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
   private static final int SLOT_FILL = 0xFF8B8B8B;
 
   public StationScreen(StationMenu menu, Inventory inventory, Component title) {
-    super(menu, inventory, title, 176, 152);
+    super(menu, inventory, title, 176, StationMenu.INVENTORY_Y + 86);
     this.inventoryLabelY = StationMenu.INVENTORY_Y - 11;
   }
 
@@ -38,13 +38,8 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
     }
     Component npc = Component.translatable("container.easy_npc_trading_station.npc");
     Component workstation = Component.translatable("container.easy_npc_trading_station.workstation");
-    graphics.text(font, npc, x + StationMenu.NPC_X + 8 - font.width(npc) / 2, y + 19, 0xFF404040, false);
-    graphics.text(
-        font,
-        workstation,
-        x + StationMenu.WORKSTATION_X + 8 - font.width(workstation) / 2,
-        y + 19,
-        0xFF404040,
-        false);
+    int labelX = x + StationMenu.SLOT_X + 16 + 6;
+    graphics.text(font, npc, labelX, y + StationMenu.NPC_Y + 4, 0xFF404040, false);
+    graphics.text(font, workstation, labelX, y + StationMenu.WORKSTATION_Y + 4, 0xFF404040, false);
   }
 }

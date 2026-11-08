@@ -19,6 +19,7 @@ release. Put the most important entries first and keep a bullet's first sentence
   share one entity type, so names are the way to treat individual shopkeepers differently.
 
 ### Changed
+- Station menu: the two slots are stacked with their labels to the right, so the texts no longer overlap.
 - When a released NPC can not be spawned, the reason is written to `latest.log`.
 
 ## [1.0.0] - 2026-11-08
