@@ -16,6 +16,25 @@ Easy NPC keeps working exactly as today. The architecture rule stays: **no ticki
 station**; the block entity stores data only, the client draws a cached display copy, the server
 creates a paused entity only while somebody uses the station.
 
+## Target NPCs (named by the maintainer)
+
+All of these are **villagers with a profession** from a mod (the lang files show
+`entity.minecraft.villager.<mod>.<profession>`), except the two werewolf entities:
+
+| NPC | Mod | Kind | Profession id (from the lang key, not verified) |
+|-----|-----|------|-----------------------------------------------|
+| Scribe | Ice and Fire | villager profession | `iceandfire:scribe` |
+| Fluix Researcher | AE2 | villager profession | `ae2:fluix_researcher` |
+| Jeweler | Iron's Jewelry | villager profession | `irons_jewelry:jeweler` |
+| Electrician | Energized Power | villager profession | `energizedpower:electrician` (key `villager.electrician`) |
+| Beekeeper | Productive Bees | villager profession | `productivebees:beekeeper` |
+| Fortune Teller | Witchery | villager profession | `witchery:fortune_teller` |
+| Werewolvian | EvilCraft | villager profession (`VillagerProfessionWerewolfConfig`) that turns into the monster `evilcraft:werewolf` | `evilcraft:werewolf` (not verified) |
+| Werewolf | Witchery | villager that is infected (command `villagerwerewolf`: "transformation in 20 seconds") and becomes the entity `witchery:werewolf`; can be cured | none, state in the villager |
+
+So the first adapter is the **villager adapter**: one adapter covers vanilla and all these
+professions. The werewolves are the hard part (section 3).
+
 ## What exists in the test pack
 
 | Mod | Entity or profession | Kind (from lang files and mod jars, not verified in game) |
@@ -68,6 +87,10 @@ with a new one. In a session that would create a second entity and lose the stat
 
 - Cancel `LivingConversionEvent.Pre` for session entities (tag `easy_npc_trading_station:transient`).
 - Stored form: the station keeps the form that was captured. This is the default ("frozen").
+- Werewolf cases (not verified, to be checked in S7.10): EvilCraft's werewolf profession and
+  Witchery's infected villager change into a monster by themselves. The station must keep them as
+  villagers: cancel the conversion for session entities and, if the mod uses a timer in the NBT
+  (Witchery: "transformation in 20 seconds"), reset or hold it while stored.
 - Open decision: optionally let the station follow the moon: when a session starts, an adapter may
   ask the NPC for its current form. Needs one adapter per mod and a check of what the mod does.
 - The client display copy is never ticked, so it shows the stored form.
@@ -83,11 +106,24 @@ with a new one. In a session that would create a second entity and lose the stat
 
 ### 5. Workstations and upgrade tier (S7.4, M8)
 
-- Villagers: the workstation is the job site block of the profession (read from the profession,
-  `VillagerProfession`'s held job site), overridable by name in `requiredWorkstations`. Modded
-  professions (Jeweler, Scribe, ...) work the same way.
-- Upgrade tier (M8): vanilla villagers and wandering traders are level 0, special NPCs and
-  Easy NPC humanoids level 1, set by the same `match=LEVEL` list.
+The workstation of a villager comes from the same data JEI shows with the *Just Enough
+Professions* addon, which reads the game registries; the station reads them too, so no list has to
+be kept by hand and every modded profession works:
+
+1. profession -> its job site test (`VillagerProfession#heldJobSite`),
+2. every point of interest type (`PoiType`) that passes the test,
+3. every block state of those types (`PoiType#matchingStates`) -> the block items.
+
+All blocks found are **accepted alternatives** (any one is enough), which is what "some professions
+have more than one workstation" needs; the requirement parser already handles alternatives
+(`a|b`). The result is computed once the registries are complete (server start) and cached.
+
+- The sign and the chat hint name the workstation; with several, the first two and "...".
+- `requiredWorkstations` stays the override: an entry by profession id or by name replaces the
+  registry result (for example when a pack wants a different block).
+- Professions without a job site (nitwit, unemployed) fall back to the default workstation.
+- Upgrade tier (M8): villagers and wandering traders level 0, everything else level 1, set by the
+  `match=LEVEL` list.
 
 ### 6. Safety and exploits
 
@@ -122,8 +158,8 @@ static pose.
 
 ## Open decisions
 
-1. Must-have NPCs for the first step (suggestion: vanilla villager and wandering trader).
-2. Werewolf trader: which mod and entity exactly, and should the station keep the stored form or
-   follow the moon?
+1. Order of the first steps (suggestion: vanilla villager and wandering trader, then the six professions of the list, then the werewolves).
+2. (answered) Werewolves of Witchery and EvilCraft as in the table; still open: keep the stored form
+   or follow the moon?
 3. Clone mode for non-Easy-NPC entities: off by default (suggested), or allowed?
-4. Which Ice and Fire NPCs are meant (the Scribe villager, or creatures)?
+4. (answered) Ice and Fire means the Scribe villager.
