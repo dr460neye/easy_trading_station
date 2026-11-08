@@ -15,7 +15,7 @@ release. Put the most important entries first and keep a bullet's first sentence
 
 ## [1.0.0] - 2026-11-08
 
-First release for Minecraft 26.1.2, NeoForge 26.1.2.126, Easy NPC 7.18.0+.
+First release, for Minecraft 26.1.2 and NeoForge 26.1.2.126. Easy NPC (7.18.0+) and Easy Villagers are optional.
 
 ### Added
 - **Works without Easy NPC and without Easy Villagers** (both optional): vanilla villagers and wandering traders are caught without either; Easy NPC adds Easy NPCs.

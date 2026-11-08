@@ -15,7 +15,11 @@ CHANGE_HEADINGS = {"added", "changed", "fixed", "removed", "deprecated", "securi
 def section(text: str, version: str) -> str:
     pattern = re.compile(r"^## \[" + re.escape(version) + r"\][^\n]*\n(.*?)(?=^## \[|\Z)", re.S | re.M)
     match = pattern.search(text)
-    return match.group(1).strip() if match else ""
+    if not match:
+        return ""
+    # the link reference lines at the end of the file belong to no version
+    body = re.sub(r"^\[[^\]]+\]:\s+\S+\s*$", "", match.group(1), flags=re.M)
+    return body.strip()
 
 
 def short(body: str) -> str:
