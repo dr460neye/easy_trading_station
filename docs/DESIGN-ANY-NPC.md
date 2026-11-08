@@ -91,6 +91,17 @@ with a new one. In a session that would create a second entity and lose the stat
   Witchery's infected villager change into a monster by themselves. The station must keep them as
   villagers: cancel the conversion for session entities and, if the mod uses a timer in the NBT
   (Witchery: "transformation in 20 seconds"), reset or hold it while stored.
+- Decision of the maintainer for Witchery: a trader may transform during use, as long as it turns
+  back. So conversion is tolerated, and the rule becomes "the station always ends with the
+  villager again":
+  - at the start of a session the station keeps a snapshot of the villager data;
+  - if the entity is converted during the session, the session follows the new entity, and when
+    the session ends the station writes the **snapshot** back (or cures the villager through the
+    mod's own cure, if there is a safe call), never the monster data;
+  - a conversion never leaves a second entity in the world and never removes the NPC from the
+    station.
+  Cancelling the conversion stays available as the fallback for mods where the snapshot is not
+  enough. Which of the two Witchery needs is decided in S7.10.
 - Open decision: optionally let the station follow the moon: when a session starts, an adapter may
   ask the NPC for its current form. Needs one adapter per mod and a check of what the mod does.
 - The client display copy is never ticked, so it shows the stored form.
