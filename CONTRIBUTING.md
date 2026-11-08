@@ -11,6 +11,7 @@ request.
 - [Tests](#tests)
 - [Assets and generators](#assets-and-generators)
 - [Commits, changelog and pull requests](#commits-changelog-and-pull-requests)
+- [Issues and milestones](#issues-and-milestones)
 - [Releases and other Minecraft versions](#releases-and-other-minecraft-versions)
 
 ---
@@ -93,7 +94,7 @@ The architecture rules of the project (they are also the reason the mod performs
 - Mod configs are **not loaded** while registries are filled; anything needed at registration time
   must not read them (see `StationVariant`).
 
-More background: [`docs/milestones/IMPLEMENTATION-NOTES.md`](docs/milestones/IMPLEMENTATION-NOTES.md)
+More background: [`docs/IMPLEMENTATION-NOTES.md`](docs/IMPLEMENTATION-NOTES.md)
 (how the pieces fit together), [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) (the config), and
 `.claude/skills/easy-npc-api/SKILL.md` (verified Easy NPC calls).
 
@@ -148,6 +149,23 @@ To add a built-in variant, add it to the generator table, rerun both and commit 
 - Open the pull request against `main`. CI (**Build**) must be green: compile, tests, jar and the
   generated-assets check.
 - Describe what you tested in the game. "Not tested in game" is fine, just say so.
+
+---
+
+## Issues and milestones
+
+Planning and status live in [GitHub Issues](https://github.com/dr460neye/easy_trading_station/issues):
+
+- **Milestones** `M1` … `M7` group the work (M7 is the future "catch any NPC" version).
+- **Stories** are issues titled `S<milestone>.<n> <name>` with acceptance criteria. Use the *Story*
+  template for new ones and the *Bug report* template for defects.
+- Label `needs-in-game-test`: built, but not yet confirmed in the game. It stays open until someone
+  has checked the criteria in the game.
+- Reference issues in commits and pull requests (`Refs #12`, `Closes #12`).
+
+A story is done when: the build is green without new warnings, the acceptance criteria are met
+(in-game criteria are confirmed by a person), `en_us` and `de_de` strings exist, and the issue is
+closed with a short comment on what changed.
 
 ---
 

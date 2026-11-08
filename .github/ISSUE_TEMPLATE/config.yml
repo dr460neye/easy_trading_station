@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Configuration help
+    url: https://github.com/dr460neye/easy_trading_station/blob/main/docs/CONFIGURATION.md
+    about: How to assign workstations to Easy NPCs in your modpack

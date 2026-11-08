@@ -4,8 +4,8 @@ NeoForge **26.1.2** (Minecraft 26.1.2, NeoForge 26.1.2.126) addon for Easy NPC 7
 Mod id `easy_npc_trading_station`, package `de.dragoni.tradingstation`, Java 25, Mojang names (no Parchment), 2-space Google style. MC 26.1 API: `Identifier` (not ResourceLocation), `player.sendOverlayMessage`, `appendHoverText(stack, ctx, TooltipDisplay, Consumer<Component>, flag)`, items via `registerItem(...)`, every item needs `assets/<ns>/items/<id>.json`.
 
 ## Read first (in this order, stop when you have enough)
-1. `docs/ROADMAP.md` – milestone status table. Work on the first open story only.
-2. `docs/milestones/Mxx-*.md` – stories with acceptance criteria for the current milestone.
+1. GitHub Issues (`gh issue list --milestone "<milestone>" --state open`) – stories with acceptance criteria, grouped by GitHub milestone (M1..M7). Work on the first open story of the current milestone only.
+2. `docs/IMPLEMENTATION-NOTES.md` – how the pieces fit together.
 3. Skill `easy-npc-api` – verified Easy NPC classes/methods. Use it instead of re-researching or running javap.
 
 ## Architecture rules (do not change without asking)
@@ -30,6 +30,6 @@ Gradle needs the JDK from `java_version` in `gradle.properties` (25): set `JAVA_
 - Comments only for non-obvious "why". No speculative abstractions.
 
 ## Working agreement
-- Finish a story -> set its status in the milestone file and `docs/ROADMAP.md` -> short summary to the user. Do not start the next milestone without being asked.
+- Finish a story -> comment the result on its GitHub issue and close it (stories that still need a check in the game get the label `needs-in-game-test` and stay open until the user confirms) -> short summary to the user. Do not start the next milestone without being asked.
 - In-game behaviour cannot be verified by the build. Say "not tested in game" unless the user confirmed.
 - Ask before: accepting EULAs, installing software system-wide, publishing anything.

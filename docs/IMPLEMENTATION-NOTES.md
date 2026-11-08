@@ -1,4 +1,4 @@
-# Implementation notes (M3-M6)
+# Implementation notes
 
 - Station: `station/TradingStationBlock` (+ `TradingStationPart`, `TradingStationBlockEntity` on BACK_LOW). FACING = side the player stands on; placed cell = FRONT_LOW, BACK_LOW lies behind it. The four cells stay together via `updateShape` (like doors).
 - Controls: right-click = talk/trade (the NPC's own `interact`, fallback trading then dialog). Right-click with a filled catcher = quick insert. Shift + right-click (empty hand or catcher in hand) = station menu (vanilla hopper layout, server-driven `StationMenu`/`StationContainer`): slot 1 = NPC as a filled catcher, slot 2 = workstation block; items can be put in/taken out in any order, NPC slot is locked while someone trades.

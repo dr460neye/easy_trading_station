@@ -1,0 +1,23 @@
+name: Story or feature
+description: A planned piece of work with acceptance criteria
+labels: ["story"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Story id and short name
+      description: "Use the milestone number, for example S6.11 Waystone support. Put the same text in the issue title."
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What has to be true for the story to be done? Mark what can only be checked in the game.
+      placeholder: "- [ ] ...\n- [ ] ... (needs in-game check)"
+    validations:
+      required: true
