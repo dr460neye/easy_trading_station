@@ -51,7 +51,17 @@ public final class ConfigEntries {
   /** Catcher mode for a type id from "id=MODE" entries, or the fallback if absent or invalid. */
   public static CatcherMode modeFor(
       Iterable<? extends String> entries, String typeId, CatcherMode fallback) {
-    return valueForKey(entries, typeId)
+    return modeFor(entries, typeId, null, fallback);
+  }
+
+  /**
+   * Catcher mode for an NPC: the first entry whose key is the entity type id ("easy_npc:humanoid")
+   * or a part of the NPC name ("wayfarer"), else the fallback; an invalid mode also gives the fallback.
+   */
+  public static CatcherMode modeFor(
+      Iterable<? extends String> entries, String typeId, String npcName, CatcherMode fallback) {
+    return valueForNpc(entries, typeId, npcName)
+        .map(String::strip)
         .map(
             value -> {
               try {

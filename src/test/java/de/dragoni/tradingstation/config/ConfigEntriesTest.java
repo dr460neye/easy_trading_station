@@ -68,4 +68,22 @@ class ConfigEntriesTest {
     assertEquals(
         CatcherMode.BOTH, ConfigEntries.modeFor(entries, "easy_npc:other", CatcherMode.BOTH));
   }
+
+  @Test
+  void catcherModeCanBeSetPerNpcName() {
+    List<String> entries = List.of("beastmaster=both", "Wayfarer=CAPTURE", "jeweler = clone");
+    String humanoid = "easy_npc:humanoid";
+    assertEquals(
+        CatcherMode.BOTH,
+        ConfigEntries.modeFor(entries, humanoid, "The Beastmaster", CatcherMode.DISABLED));
+    assertEquals(
+        CatcherMode.CAPTURE,
+        ConfigEntries.modeFor(entries, humanoid, "wayfarer", CatcherMode.DISABLED));
+    assertEquals(
+        CatcherMode.CLONE,
+        ConfigEntries.modeFor(entries, humanoid, "Royal Jeweler", CatcherMode.DISABLED));
+    assertEquals(
+        CatcherMode.DISABLED,
+        ConfigEntries.modeFor(entries, humanoid, "Blacksmith", CatcherMode.DISABLED));
+  }
 }

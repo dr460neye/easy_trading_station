@@ -50,8 +50,10 @@ public class NpcCatcherItem extends Item {
     if (!(target instanceof EasyNPC<?> npc)) {
       return InteractionResult.PASS;
     }
-    CatcherMode mode = TradingStationConfig.modeFor(target.getType());
-    TradingStationMod.LOGGER.info("Capture: type={} mode={}", target.getType(), mode);
+    PresetData data = PresetData.get(PresetDataUtils.toItemStack(npc));
+    String name = data == null ? "" : npcName(data);
+    CatcherMode mode = TradingStationConfig.modeFor(target.getType(), name);
+    TradingStationMod.LOGGER.info("Capture: type={} name='{}' mode={}", target.getType(), name, mode);
     if (mode == CatcherMode.DISABLED) {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.disabled"));
       return InteractionResult.FAIL;
@@ -62,7 +64,6 @@ public class NpcCatcherItem extends Item {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.no_access"));
       return InteractionResult.FAIL;
     }
-    PresetData data = PresetData.get(PresetDataUtils.toItemStack(npc));
     TradingStationMod.LOGGER.info("Capture preset: present={} valid={}", data != null, data != null && data.hasValidData());
     if (data == null || !data.hasValidData()) {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.failed"));

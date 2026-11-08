@@ -158,8 +158,10 @@ tags, several options or a label.
   # DISABLED
   defaultMode = "CAPTURE"
 
-  # per entity type: "entity_type_id=MODE"
-  typeOverrides = ["easy_npc:humanoid=CLONE", "easy_npc:villager=DISABLED"]
+  # per NPC: "match=MODE". match is an entity type id (contains ':') or a part of the NPC's
+  # name (case-insensitive). The first entry that fits wins. All Easy NPC humanoids share the
+  # type easy_npc:humanoid, so use names to treat individual shopkeepers differently.
+  typeOverrides = ["beastmaster=BOTH", "wayfarer=CAPTURE", "jeweler=CLONE", "easy_npc:villager=DISABLED"]
 ```
 
 Things worth knowing when you build a pack around the catcher:

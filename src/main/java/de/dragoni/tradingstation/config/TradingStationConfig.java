@@ -29,8 +29,9 @@ public class TradingStationConfig {
     TYPE_OVERRIDES =
         builder
             .comment(
-                "Per NPC type overrides in the format 'entity_type_id=MODE'.",
-                "Example: [\"easy_npc:humanoid=CLONE\", \"easy_npc:villager=DISABLED\"]")
+                "Per NPC overrides in the format 'match=MODE'. match is an entity type id",
+                "(contains ':') or part of the NPC name (case-insensitive); the first entry that fits wins.",
+                "Example: [\"wayfarer=CAPTURE\", \"jeweler=CLONE\", \"easy_npc:villager=DISABLED\"]")
             .defineListAllowEmpty(
                 "typeOverrides", List.of(), () -> "easy_npc:humanoid=CAPTURE", o -> o instanceof String);
     builder.pop();
@@ -87,9 +88,9 @@ public class TradingStationConfig {
 
   private TradingStationConfig() {}
 
-  public static CatcherMode modeFor(EntityType<?> type) {
+  public static CatcherMode modeFor(EntityType<?> type, String npcName) {
     String id = BuiltInRegistries.ENTITY_TYPE.getKey(type).toString();
-    return ConfigEntries.modeFor(TYPE_OVERRIDES.get(), id, DEFAULT_MODE.get());
+    return ConfigEntries.modeFor(TYPE_OVERRIDES.get(), id, npcName, DEFAULT_MODE.get());
   }
 
   /** The workstation this NPC needs: a specific entry, else the default block. Server side only. */
