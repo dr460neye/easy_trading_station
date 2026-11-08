@@ -1,10 +1,18 @@
 # Changelog
 
-Newest first. One section per uploaded file.
+All notable changes of this project are documented here. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follow
+[Semantic Versioning](https://semver.org/). Every release is published for one Minecraft version;
+the tag is `<minecraft version>-<mod version>` (see [docs/RELEASING.md](docs/RELEASING.md)).
 
-## 1.0.0 (Minecraft 26.1.2, NeoForge 26.1.2.126, Easy NPC 7.18.0+)
+The text of a version section is used as the release notes on GitHub and CurseForge, so write it
+for players and modpack makers.
 
-First release.
+## [Unreleased]
+
+## [1.0.0] - 2026-11-08
+
+First release for Minecraft 26.1.2, NeoForge 26.1.2.126, Easy NPC 7.18.0+.
 
 ### Added
 - **NPC Catcher**: capture or clone Easy NPCs; modes `CAPTURE`, `CLONE`, `BOTH`, `DISABLED`, global and per NPC type.
@@ -23,3 +31,6 @@ First release.
 ### Known issues
 - Only Easy NPC entities can be caught.
 - Multiplayer and large servers are not tested yet.
+
+[Unreleased]: https://github.com/dr460neye/easy_trading_station/compare/26.1.2-1.0.0...HEAD
+[1.0.0]: https://github.com/dr460neye/easy_trading_station/releases/tag/26.1.2-1.0.0

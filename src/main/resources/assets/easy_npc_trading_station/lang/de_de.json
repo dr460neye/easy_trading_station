@@ -10,6 +10,13 @@
   "message.easy_npc_trading_station.busy": "Jemand anderes benutzt diese Station gerade.",
   "message.easy_npc_trading_station.empty": "Die Station ist leer. Shift + Rechtsklick öffnet das Menü, oder Rechtsklick mit einem gefüllten NPC-Fänger.",
   "message.easy_npc_trading_station.nothing": "Dieser NPC hat nichts anzubieten.",
+  "container.easy_npc_trading_station.station": "Handelsstation",
+  "container.easy_npc_trading_station.npc": "NPC-Fänger",
+  "container.easy_npc_trading_station.workstation": "Workstation",
+  "message.easy_npc_trading_station.in_station": "Dieser NPC wird gerade von einer Station benutzt und kann nicht gefangen werden.",
+  "message.easy_npc_trading_station.workstation_missing": "Für diesen EasyNPC ist keine Workstation vorhanden. Bitte lege \"%s\" ein.",
+  "sign.easy_npc_trading_station.strike.title": "STREIK!",
+  "sign.easy_npc_trading_station.strike.body": "Ich arbeite erst wieder, wenn meine Geräte (%s) in Ordnung sind.",
   "block.easy_npc_trading_station.station_futuristic": "Futuristische Handelsstation",
   "block.easy_npc_trading_station.station_stone": "Stein-Handelsstation",
   "block.easy_npc_trading_station.station_oak": "Eichen-Handelsstation",
@@ -22,12 +29,5 @@
   "block.easy_npc_trading_station.station_cherry": "Kirsch-Handelsstation",
   "block.easy_npc_trading_station.station_bamboo": "Bambus-Handelsstation",
   "block.easy_npc_trading_station.station_crimson": "Karmesin-Handelsstation",
-  "block.easy_npc_trading_station.station_warped": "Wirrholz-Handelsstation",
-  "container.easy_npc_trading_station.station": "Handelsstation",
-  "container.easy_npc_trading_station.npc": "NPC-Fänger",
-  "container.easy_npc_trading_station.workstation": "Workstation",
-  "message.easy_npc_trading_station.in_station": "Dieser NPC wird gerade von einer Station benutzt und kann nicht gefangen werden.",
-  "message.easy_npc_trading_station.workstation_missing": "Für diesen EasyNPC ist keine Workstation vorhanden. Bitte lege \"%s\" ein.",
-  "sign.easy_npc_trading_station.strike.title": "STREIK!",
-  "sign.easy_npc_trading_station.strike.body": "Ich arbeite erst wieder, wenn meine Geräte (%s) in Ordnung sind."
+  "block.easy_npc_trading_station.station_warped": "Wirrholz-Handelsstation"
 }

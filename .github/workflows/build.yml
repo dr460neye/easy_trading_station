@@ -1,0 +1,58 @@
+name: Build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Java, Minecraft and NeoForge versions live in gradle.properties only (one place per branch).
+      - name: Read target versions
+        id: props
+        run: |
+          echo "java=$(grep '^java_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+          echo "minecraft=$(grep '^minecraft_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+          echo "version=$(grep '^mod_version=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ steps.props.outputs.java }}
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Generated assets are up to date
+        run: |
+          python3 tools/generate_station_assets.py
+          git diff --exit-code -- src/main/resources || (echo "Run 'python tools/generate_station_assets.py' and commit the result" && exit 1)
+
+      - name: Build and test
+        run: ./gradlew build --console=plain
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy-trading-station-neoforge-${{ steps.props.outputs.minecraft }}-${{ steps.props.outputs.version }}
+          path: build/libs/easy-trading-station-neoforge-*.jar
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload test report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests
+          retention-days: 7

@@ -17,10 +17,10 @@ Mod id `easy_npc_trading_station`, package `com.oli.tradingstation`, Java 25, Mo
 - Keep NPC logic generic (preset = entity type + NBT) so later versions can catch non-Easy-NPC mobs.
 
 ## Commands (Windows, PowerShell)
-Gradle needs JDK 25: `$env:JAVA_HOME="$env:USERPROFILE\.jdks\openjdk-25.0.1"` then `.\gradlew.bat <task>`. See skill `build-run`.
+Gradle needs the JDK from `java_version` in `gradle.properties` (25): set `JAVA_HOME` (own path in git-ignored `tools/local.json` as `javaHome`) then `.\gradlew.bat <task>`. See skill `build-run`. Unit tests: `.\gradlew.bat test`.
 - Build check: `.\gradlew.bat build --console=plain 2>&1 | Select-String 'error|Warnung|BUILD'`
 - Never print full Gradle output; always filter. Never open the Easy NPC jar or Gradle caches except via `javap -public` on one class.
-- Test instance (clone of FTB Evolution 2, MC 26.1.2, has Easy NPC 7.18.0, Easy Villagers, Witchery): `powershell -NoProfile -File tools\deploy-to-test-instance.ps1` builds and copies our jar into its `mods` folder (replaces only our own jar). The user starts the game from CurseForge.
+- Test instance (clone of FTB Evolution 2, MC 26.1.2, has Easy NPC 7.18.0, Easy Villagers, Witchery): `powershell -NoProfile -ExecutionPolicy Bypass -File tools\deploy-to-test-instance.ps1` builds and copies our jar into its `mods` folder (replaces only our own jar); instance path comes from git-ignored `tools/local.json`. `python tools/launch_test_instance.py "<world>"` starts it directly (game must be closed to deploy).
 - `runClient` / `runServer` need a person at the game; do not start `runServer` (needs EULA acceptance by the user).
 
 ## Conventions

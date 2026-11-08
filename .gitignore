@@ -33,13 +33,18 @@ bin/
 .DS_Store
 
 ### Minecraft Modding ###
-run/
+/run/
 !**/src/**/run/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
 
-### Local tooling ###
+### Local tooling (never commit machine specific files) ###
 .claude/settings.local.json
-config/
-run/
+tools/local.json
+tools/*.local.*
+/config/
+/run/
+/run-data/
+*.log
+RELEASE_NOTES.md

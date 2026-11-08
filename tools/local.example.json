@@ -1,0 +1,7 @@
+{
+  "_comment": "Copy to tools/local.json (ignored by git) and adapt. Only used by the scripts in tools/.",
+  "testInstance": "C:\\Users\\YOU\\curseforge\\minecraft\\Instances\\My Test Instance",
+  "javaHome": "C:\\Users\\YOU\\.jdks\\temurin-25",
+  "world": "New World",
+  "memory": "8G"
+}

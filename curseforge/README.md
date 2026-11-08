@@ -7,18 +7,32 @@ folder is part of the mod jar.
 |------|-----|
 | [`project-info.md`](project-info.md) | Fields of the CurseForge project form: name, slug, summary, categories, tags, links, dependencies. |
 | [`description.md`](description.md) | The long project description (copy into the *Description* editor; Markdown, switch the editor to Markdown or paste as rich text). |
-| [`changelog.md`](changelog.md) | Changelog text for each uploaded file. |
+| [`../CHANGELOG.md`](../CHANGELOG.md) | The changelog (one section per version); the release pipeline uploads the matching section with each file. |
 | [`images/`](images) | Images for the gallery. Currently the technical sketches; replace with in-game screenshots (see list in `project-info.md`). |
 
-## Publishing checklist
+## Publishing
 
-1. `./gradlew build` (JDK 25) and take the jar from `build/libs/`.
-2. Set `mod_version` in `gradle.properties` and add the version to `changelog.md`.
-3. Create / update the project with the data from `project-info.md`.
-4. Upload the jar. Game version **26.1.2**, loader **NeoForge**, Java **25**, relation:
-   *Required dependency* Easy NPC.
-5. Paste the matching changelog section into the file's changelog field.
-6. Add screenshots (cover image, then station variants, menu, strike sign, config example).
+Normally the **release pipeline** uploads the file (see [`../docs/RELEASING.md`](../docs/RELEASING.md)):
+push a tag `<minecraft version>-<mod version>` and GitHub Actions builds, creates the GitHub
+release and uploads to CurseForge with the right game version, loader, Java version, release type,
+changelog and the required dependency *Easy NPC*.
+
+One-time work on CurseForge:
+1. Create the project with the data from `project-info.md` and the text from `description.md`.
+2. Copy the project id into the GitHub repository variable `CURSEFORGE_PROJECT_ID` and an API
+   token into the secret `CURSEFORGE_TOKEN`.
+3. Add screenshots (cover image, then station variants, menu, strike sign, config example).
+
+Manual upload (if you ever need it): take the jar from `build/libs/`, game version **26.1.2**,
+loader **NeoForge**, Java **25**, required dependency Easy NPC, changelog from `../CHANGELOG.md`.
+
+## File naming
+
+| | Pattern | Example |
+|-|---------|---------|
+| Jar | `easy-trading-station-neoforge-<minecraft>-<version>.jar` | `easy-trading-station-neoforge-26.1.2-1.0.0.jar` |
+| File display name | `Easy Trading Station <version> (NeoForge <minecraft>)` | `Easy Trading Station 1.0.0 (NeoForge 26.1.2)` |
+| Release type | no suffix: Release, `-beta`/`-rc`: Beta, `-alpha`: Alpha | `1.1.0-beta.1` is a Beta |
 
 ## Notes
 

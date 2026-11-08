@@ -11,9 +11,9 @@ Values for the project form. Items marked **TODO** need a decision or an in-game
 | Mod id | `easy_npc_trading_station` |
 | Class | Mods |
 | Game | Minecraft Java Edition |
-| Game version | 26.1.2 |
+| Game version | 26.1.2 (set per upload by the pipeline) |
 | Mod loader | NeoForge (26.1.2.126+) |
-| Java | 25 |
+| Java | 25 (set per upload by the pipeline) |
 | Environment | Client and Server (required on both) |
 | License | MIT |
 | Source | https://github.com/dr460neye/easy_trading_station |

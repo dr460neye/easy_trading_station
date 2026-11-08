@@ -103,7 +103,7 @@ public record StationVariant(String id, Identifier baseBlock, boolean futuristic
     variants.putIfAbsent(variant.id(), variant);
   }
 
-  private static String idFor(Identifier id) {
+  static String idFor(Identifier id) {
     String path = id.getPath().replaceAll("[^a-z0-9_]", "_").toLowerCase(Locale.ROOT);
     return id.getNamespace().equals("minecraft") ? path : id.getNamespace() + "_" + path;
   }

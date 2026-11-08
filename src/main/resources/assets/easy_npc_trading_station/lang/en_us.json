@@ -10,6 +10,13 @@
   "message.easy_npc_trading_station.busy": "Someone else is using this station.",
   "message.easy_npc_trading_station.empty": "The station is empty. Shift + right-click opens its menu, or right-click with a filled NPC Catcher.",
   "message.easy_npc_trading_station.nothing": "This NPC has nothing to offer.",
+  "container.easy_npc_trading_station.station": "Trading Station",
+  "container.easy_npc_trading_station.npc": "NPC Catcher",
+  "container.easy_npc_trading_station.workstation": "Workstation",
+  "message.easy_npc_trading_station.in_station": "This NPC is in use by a station and can not be caught.",
+  "message.easy_npc_trading_station.workstation_missing": "There is no workstation for this EasyNPC available. Please provide a \"%s\".",
+  "sign.easy_npc_trading_station.strike.title": "ON STRIKE!",
+  "sign.easy_npc_trading_station.strike.body": "Not working until my equipment (%s) is back in order.",
   "block.easy_npc_trading_station.station_futuristic": "Futuristic Trading Station",
   "block.easy_npc_trading_station.station_stone": "Stone Trading Station",
   "block.easy_npc_trading_station.station_oak": "Oak Trading Station",
@@ -22,12 +29,5 @@
   "block.easy_npc_trading_station.station_cherry": "Cherry Trading Station",
   "block.easy_npc_trading_station.station_bamboo": "Bamboo Trading Station",
   "block.easy_npc_trading_station.station_crimson": "Crimson Trading Station",
-  "block.easy_npc_trading_station.station_warped": "Warped Trading Station",
-  "container.easy_npc_trading_station.station": "Trading Station",
-  "container.easy_npc_trading_station.npc": "NPC Catcher",
-  "container.easy_npc_trading_station.workstation": "Workstation",
-  "message.easy_npc_trading_station.in_station": "This NPC is in use by a station and can not be caught.",
-  "message.easy_npc_trading_station.workstation_missing": "There is no workstation for this EasyNPC available. Please provide a \"%s\".",
-  "sign.easy_npc_trading_station.strike.title": "ON STRIKE!",
-  "sign.easy_npc_trading_station.strike.body": "Not working until my equipment (%s) is back in order."
+  "block.easy_npc_trading_station.station_warped": "Warped Trading Station"
 }

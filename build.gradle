@@ -37,11 +37,12 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    // CurseForge style: <name>-<loader>-<minecraft version>-<mod version>.jar
+    archivesName = "${archives_base_name}-neoforge-${minecraft_version}"
 }
 
 // Minecraft 26.1 requires Java 25.
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version.toInteger())
 
 neoForge {
     // Specify the version of NeoForge to use.
@@ -109,6 +110,14 @@ neoForge {
     }
 }
 
+// Lets unit tests use Minecraft classes (BlockPos, Direction, Identifier ...) without a game.
+neoForge {
+    unitTest {
+        enable()
+        testedMod = mods."${mod_id}"
+    }
+}
+
 // Sets up a dependency configuration called 'localRuntime'.
 // This configuration should be used instead of 'runtimeOnly' to declare
 // a dependency that will be present for runtime testing but that is
@@ -120,6 +129,11 @@ configurations {
 dependencies {
     // Easy NPC (core, without config UI) - needed at compile time and in the dev runtime
     implementation "maven.modrinth:easy-npc-core:${easy_npc_version_id}"
+
+    // Unit tests for the pure logic (no Minecraft bootstrap needed)
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -192,5 +206,13 @@ idea {
     module {
         downloadSources = true
         downloadJavadoc = true
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    testLogging {
+        events 'failed'
+        exceptionFormat = 'full'
     }
 }
