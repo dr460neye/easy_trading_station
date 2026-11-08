@@ -2,6 +2,7 @@ package de.dragoni.tradingstation.station;
 
 import de.dragoni.tradingstation.TradingStationMod;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -9,15 +10,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import com.google.gson.JsonParser;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.properties.WoodType;
+import net.neoforged.fml.ModList;
 
 /**
  * One station block. {@code baseBlock} supplies the lower material and its texture; {@code builtIn}
  * variants ship static assets, the others get theirs generated at runtime.
  */
 public record StationVariant(String id, Identifier baseBlock, boolean futuristic, boolean builtIn) {
+
+  private static final String PLANKS_TAG_FILE = "data/minecraft/tags/block/planks.json";
 
   private static final String[] BUILT_IN_WOODS = {
     "oak", "spruce", "birch", "jungle", "acacia", "dark_oak", "mangrove", "cherry", "bamboo",
@@ -40,6 +45,11 @@ public record StationVariant(String id, Identifier baseBlock, boolean futuristic
     } catch (RuntimeException e) {
       TradingStationMod.LOGGER.warn("Could not enumerate wood types, using config list only", e);
     }
+    for (Identifier planks : plankBlocksFromTags()) {
+      if (!planks.getNamespace().equals("minecraft")) {
+        add(variants, new StationVariant(idFor(planks), planks, false, false));
+      }
+    }
     for (String entry : readExtraVariants()) {
       String[] parts = entry.split("=", 2);
       Identifier block = Identifier.tryParse(parts[0].trim());
@@ -51,6 +61,52 @@ public record StationVariant(String id, Identifier baseBlock, boolean futuristic
       add(variants, new StationVariant(idFor(block), block, futuristic, false));
     }
     return new ArrayList<>(variants.values());
+  }
+
+  /**
+   * Planks of other mods, read from their own copy of the block tag {@code minecraft:planks}.
+   * Reading the tag files works at registration time and does not depend on the order in which the
+   * mods register their blocks, and it finds woods that are not registered as a WoodType.
+   */
+  private static List<Identifier> plankBlocksFromTags() {
+    List<Identifier> planks = new ArrayList<>();
+    try {
+      for (var info : ModList.get().getModFiles()) {
+        var contents = info.getFile().getContents();
+        if (contents.findFile(PLANKS_TAG_FILE).isEmpty()) {
+          continue;
+        }
+        try {
+          planks.addAll(
+              parsePlanksTag(new String(contents.readFile(PLANKS_TAG_FILE), StandardCharsets.UTF_8)));
+        } catch (IOException | RuntimeException e) {
+          TradingStationMod.LOGGER.warn("Could not read the planks tag of {}", info.getFile(), e);
+        }
+      }
+    } catch (RuntimeException e) {
+      TradingStationMod.LOGGER.warn("Could not scan mods for planks, using wood types and config only", e);
+    }
+    return planks;
+  }
+
+  /** Block ids listed in a tag file; tag references ('#...') and optional-missing entries are kept apart. */
+  static List<Identifier> parsePlanksTag(String json) {
+    List<Identifier> ids = new ArrayList<>();
+    var values = JsonParser.parseString(json).getAsJsonObject().getAsJsonArray("values");
+    if (values == null) {
+      return ids;
+    }
+    for (var value : values) {
+      String text =
+          value.isJsonObject() ? value.getAsJsonObject().get("id").getAsString() : value.getAsString();
+      if (!text.startsWith("#")) {
+        Identifier id = Identifier.tryParse(text);
+        if (id != null) {
+          ids.add(id);
+        }
+      }
+    }
+    return ids;
   }
 
   /**

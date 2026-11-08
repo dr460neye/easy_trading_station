@@ -179,7 +179,10 @@ Things worth knowing when you build a pack around the catcher:
 ## Extra station variants (modded woods, any block)
 
 Stations exist for stone, a futuristic style and all vanilla woods. Wood types registered by other
-mods get a station automatically. For anything else edit
+mods get a station automatically, and so does every planks block that another mod lists in the
+block tag `minecraft:planks` (this finds woods such as Menril, Rowan or Occultism's Otherworld
+wood, which are not registered as wood types). The generated name is derived from the block id,
+for example `occultism:otherplanks` becomes "Other Trading Station". For anything else edit
 `config/easy_npc_trading_station-extra-variants.txt`:
 
 ```text

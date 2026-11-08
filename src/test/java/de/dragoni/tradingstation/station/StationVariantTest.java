@@ -30,4 +30,16 @@ class StationVariantTest {
   void blockNameIsPrefixed() {
     assertEquals("station_stone", new StationVariant("stone", null, false, true).blockName());
   }
+
+  @Test
+  void planksTagListsBlocksAndSkipsTagReferences() {
+    String json =
+        "{\"replace\": false, \"values\": [\"occultism:otherplanks\", \"#c:planks\","
+            + " {\"id\": \"witchery:rowan_planks\", \"required\": false}]}";
+    assertEquals(
+        java.util.List.of(
+            net.minecraft.resources.Identifier.parse("occultism:otherplanks"),
+            net.minecraft.resources.Identifier.parse("witchery:rowan_planks")),
+        StationVariant.parsePlanksTag(json));
+  }
 }
