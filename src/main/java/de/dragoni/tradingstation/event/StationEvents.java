@@ -4,7 +4,7 @@ import de.dragoni.tradingstation.TradingStationMod;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
 import de.dragoni.tradingstation.station.NpcOrigin;
 import de.dragoni.tradingstation.station.StationSessions;
-import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.dragoni.tradingstation.station.StationNpcData;
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -94,7 +94,7 @@ public class StationEvents {
     if (stack.isEmpty() || !(stack.getItem() instanceof NpcCatcherItem)) {
       return; // picked up items are empty by now
     }
-    PresetData data = NpcCatcherItem.getNpc(stack);
+    StationNpcData data = NpcCatcherItem.getNpc(stack);
     if (NpcOrigin.has(data)) {
       NpcOrigin.queueDeath(data);
     }

@@ -1,10 +1,11 @@
 # Easy Trading Station
 
-**An addon for [Easy NPC](https://modrinth.com/mod/easy-npc).** Catch an Easy NPC, a villager or a
-wandering trader with the **NPC Catcher** and keep it in a glass **Trading Station**: shops, dialogs
+**Works with vanilla and with [Easy NPC](https://modrinth.com/mod/easy-npc).** Catch a villager, a
+wandering trader or (with Easy NPC installed) an Easy NPC with the **NPC Catcher** and keep it in a
+glass **Trading Station**: shops, dialogs
 and scripts keep working, the NPC stands still and costs (almost) no performance.
 
-*Minecraft 26.1.2 · NeoForge · requires Easy NPC 7.18.0+*
+*Minecraft 26.1.2 · NeoForge · Easy NPC 7.18.0+ and Easy Villagers are optional*
 
 ![Trading stations with a Wayfarer, a Jeweler and a strike sign](https://raw.githubusercontent.com/dr460neye/easy_trading_station/main/curseforge/images/title-screen.png)
 
@@ -87,8 +88,8 @@ Full guide:
 
 ## Good to know
 
-- Besides Easy NPCs only standard villagers and wandering traders can be caught right now; the
-  traders of other mods are planned.
+- Easy NPC and Easy Villagers are optional. Without Easy NPC the catcher holds standard villagers
+  and wandering traders; with it, Easy NPCs as well. The traders of other mods are planned.
 - Standard villagers are never cloned while Easy Villagers is installed.
 - Multiplayer and big servers have not been tested yet.
 - Needs to be installed on server and client.

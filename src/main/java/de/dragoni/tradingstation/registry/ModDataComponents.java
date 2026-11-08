@@ -1,7 +1,7 @@
 package de.dragoni.tradingstation.registry;
 
 import de.dragoni.tradingstation.TradingStationMod;
-import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.dragoni.tradingstation.station.StationNpcData;
 import java.util.function.Supplier;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -12,10 +12,10 @@ public class ModDataComponents {
   public static final DeferredRegister.DataComponents DATA_COMPONENTS =
       DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, TradingStationMod.MOD_ID);
 
-  public static final Supplier<DataComponentType<PresetData>> CAPTURED_NPC =
+  public static final Supplier<DataComponentType<StationNpcData>> CAPTURED_NPC =
       DATA_COMPONENTS.registerComponentType(
           "captured_npc",
-          builder -> builder.persistent(PresetData.CODEC).networkSynchronized(PresetData.STREAM_CODEC));
+          builder -> builder.persistent(StationNpcData.CODEC).networkSynchronized(StationNpcData.STREAM_CODEC));
 
   /** Marks the upgrade that old stations got automatically; it can not be taken out. */
   public static final Supplier<DataComponentType<Boolean>> LEGACY_UPGRADE =

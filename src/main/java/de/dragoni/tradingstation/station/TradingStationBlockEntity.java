@@ -8,7 +8,7 @@ import de.dragoni.tradingstation.item.StationUpgradeItem;
 import de.dragoni.tradingstation.registry.ModDataComponents;
 import de.dragoni.tradingstation.registry.ModItems;
 import de.dragoni.tradingstation.registry.ModBlocks;
-import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.dragoni.tradingstation.station.StationNpcData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,7 +32,7 @@ public class TradingStationBlockEntity extends BlockEntity {
 
   private static final int DATA_VERSION = 1;
 
-  private PresetData npc;
+  private StationNpcData npc;
   private ItemStack workstation = ItemStack.EMPTY;
   private ItemStack upgrade = ItemStack.EMPTY;
   private Identifier displayWorkstation;
@@ -51,7 +51,7 @@ public class TradingStationBlockEntity extends BlockEntity {
     super(ModBlocks.STATION_BLOCK_ENTITY, pos, state);
   }
 
-  public PresetData getNpc() {
+  public StationNpcData getNpc() {
     return npc;
   }
 
@@ -152,13 +152,13 @@ public class TradingStationBlockEntity extends BlockEntity {
     return displayWorkstation;
   }
 
-  public void setNpc(PresetData data) {
+  public void setNpc(StationNpcData data) {
     this.npc = data;
     changed();
   }
 
-  public PresetData takeNpc() {
-    PresetData data = npc;
+  public StationNpcData takeNpc() {
+    StationNpcData data = npc;
     npc = null;
     changed();
     return data;
@@ -228,7 +228,7 @@ public class TradingStationBlockEntity extends BlockEntity {
   protected void saveAdditional(ValueOutput output) {
     super.saveAdditional(output);
     if (npc != null) {
-      output.store("Npc", PresetData.CODEC, npc);
+      output.store("Npc", StationNpcData.CODEC, npc);
     }
     if (!workstation.isEmpty()) {
       output.store("Workstation", ItemStack.CODEC, workstation);
@@ -259,7 +259,7 @@ public class TradingStationBlockEntity extends BlockEntity {
   @Override
   protected void loadAdditional(ValueInput input) {
     super.loadAdditional(input);
-    npc = input.read("Npc", PresetData.CODEC).orElse(null);
+    npc = input.read("Npc", StationNpcData.CODEC).orElse(null);
     workstation = input.read("Workstation", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     upgrade = input.read("Upgrade", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     if (input.getIntOr("StationVersion", 0) < DATA_VERSION) {

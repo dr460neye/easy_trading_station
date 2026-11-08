@@ -1,7 +1,7 @@
 package de.dragoni.tradingstation.station;
 
 import de.dragoni.tradingstation.config.WorkstationRequirement;
-import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.dragoni.tradingstation.station.StationNpcData;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,12 +44,12 @@ public final class VillagerWorkstations {
   }
 
   /** Same for stored station data of a villager; "" for every other entity. */
-  public static String idleKind(PresetData data) {
+  public static String idleKind(StationNpcData data) {
     return data != null && data.entityType() == EntityType.VILLAGER ? idleKind(data.data()) : "";
   }
 
   /** The requirement of a stored villager; null for other entities and for villagers without a job site. */
-  public static synchronized WorkstationRequirement requirementFor(PresetData data) {
+  public static synchronized WorkstationRequirement requirementFor(StationNpcData data) {
     if (data == null || data.entityType() != EntityType.VILLAGER || !idleKind(data.data()).isEmpty()) {
       return null;
     }

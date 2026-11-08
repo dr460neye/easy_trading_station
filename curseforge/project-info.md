@@ -38,7 +38,7 @@ easy npc, npc, trading, villager, wandering trader, shop, station, workstation, 
 
 | Project | Relation |
 |---------|----------|
-| Easy NPC (core, 7.18.0 or newer for 26.1.2) | **Required** |
+| Easy NPC (core, 7.18.0 or newer for 26.1.2) | **Optional** (needed to catch Easy NPCs; villagers and wandering traders work without it) |
 | Easy Villagers | **Optional** (standard villagers are never cloned while it is installed) |
 
 ## Images

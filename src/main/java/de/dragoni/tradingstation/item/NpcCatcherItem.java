@@ -1,16 +1,14 @@
 package de.dragoni.tradingstation.item;
 
 import de.dragoni.tradingstation.TradingStationMod;
+import de.dragoni.tradingstation.compat.EasyNpcCompat;
 import de.dragoni.tradingstation.config.CatcherMode;
 import de.dragoni.tradingstation.config.TradingStationConfig;
 import de.dragoni.tradingstation.registry.ModDataComponents;
 import de.dragoni.tradingstation.registry.ModItems;
 import de.dragoni.tradingstation.station.NpcOrigin;
 import de.dragoni.tradingstation.station.StationNpc;
-import de.markusbordihn.easynpc.data.preset.PresetData;
-import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
-import de.markusbordihn.easynpc.security.SecurityManager;
+import de.dragoni.tradingstation.station.StationNpcData;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.common.NeoForge;
@@ -38,19 +36,19 @@ public class NpcCatcherItem extends Item {
     return stack.has(ModDataComponents.CAPTURED_NPC.get());
   }
 
-  public static ItemStack filled(PresetData data) {
+  public static ItemStack filled(StationNpcData data) {
     ItemStack stack = new ItemStack(ModItems.NPC_CATCHER.get());
     stack.set(ModDataComponents.CAPTURED_NPC.get(), data);
     return stack;
   }
 
-  public static PresetData getNpc(ItemStack stack) {
+  public static StationNpcData getNpc(ItemStack stack) {
     return stack.get(ModDataComponents.CAPTURED_NPC.get());
   }
 
   /** Server side: captures or clones the target into the catcher held in the given hand. */
   public static InteractionResult capture(ServerPlayer player, InteractionHand hand, Entity target) {
-    boolean easy = target instanceof EasyNPC<?>;
+    boolean easy = EasyNpcCompat.is(target);
     if (!easy && !StationNpc.isGenericSupported(target)) {
       return InteractionResult.PASS;
     }
@@ -59,10 +57,10 @@ public class NpcCatcherItem extends Item {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.no_access"));
       return InteractionResult.FAIL;
     }
-    PresetData data =
+    StationNpcData data =
         easy
-            ? PresetData.get(PresetDataUtils.toItemStack((EasyNPC<?>) target))
-            : new PresetData(target.getType(), StationNpc.entityTag(target));
+            ? EasyNpcCompat.capture(target)
+            : new StationNpcData(target.getType(), StationNpc.entityTag(target));
     String name = data == null ? "" : npcName(data);
     CatcherMode mode = TradingStationConfig.modeFor(target.getType(), name);
     TradingStationMod.LOGGER.info("Capture: type={} name='{}' mode={}", target.getType(), name, mode);
@@ -71,9 +69,7 @@ public class NpcCatcherItem extends Item {
       return InteractionResult.FAIL;
     }
     if (easy) {
-      var decision = SecurityManager.checkAccess(player, (EasyNPC<?>) target);
-      TradingStationMod.LOGGER.info("Capture access: allowed={} reason={}", decision.allowed(), decision.reason());
-      if (!decision.allowed()) {
+      if (!EasyNpcCompat.accessAllowed(player, target)) {
         player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.no_access"));
         return InteractionResult.FAIL;
       }
@@ -91,12 +87,7 @@ public class NpcCatcherItem extends Item {
     }
     if (!clone && easy) {
       // remember the home so the NPC can "die" there if this catcher is destroyed
-      var npc = (EasyNPC<?>) target;
-      BlockPos home =
-          npc.getEasyNPCNavigationData().hasNPCHomePosition()
-              ? npc.getEasyNPCNavigationData().getNPCHomePosition()
-              : target.blockPosition();
-      data = NpcOrigin.mark(data, target.level(), home);
+      data = NpcOrigin.mark(data, target.level(), EasyNpcCompat.home(target));
     }
     ItemStack filled = player.getItemInHand(hand).copyWithCount(1);
     filled.set(ModDataComponents.CAPTURED_NPC.get(), data);
@@ -134,7 +125,7 @@ public class NpcCatcherItem extends Item {
   public InteractionResult useOn(UseOnContext context) {
     Level level = context.getLevel();
     ItemStack stack = context.getItemInHand();
-    PresetData data = getNpc(stack);
+    StationNpcData data = getNpc(stack);
     if (data == null) {
       return InteractionResult.PASS;
     }
@@ -144,7 +135,7 @@ public class NpcCatcherItem extends Item {
     var pos = context.getClickedPos().relative(context.getClickedFace());
     boolean spawned =
         StationNpc.isEasyNpc(data.entityType())
-            ? PresetDataUtils.spawnEntity(data, level, pos, player)
+            ? EasyNpcCompat.spawn(data, level, pos, player)
             : StationNpc.spawnGeneric((net.minecraft.server.level.ServerLevel) level, data, pos, player.getYRot());
     if (spawned) {
       consume(player, stack);
@@ -161,13 +152,13 @@ public class NpcCatcherItem extends Item {
   }
 
   /** The NPC's own name as a component, null if it has none. */
-  public static Component nameComponent(PresetData data) {
+  public static Component nameComponent(StationNpcData data) {
     Component name = customName(data.data(), 0);
     return name == null || name.getString().isBlank() ? null : name;
   }
 
   /** Plain text of the NPC's name (or its translation key); empty if unnamed. */
-  public static String npcName(PresetData data) {
+  public static String npcName(StationNpcData data) {
     Component name = customName(data.data(), 0);
     if (name == null) {
       return "";
@@ -222,7 +213,7 @@ public class NpcCatcherItem extends Item {
       TooltipDisplay display,
       Consumer<Component> tooltip,
       TooltipFlag flag) {
-    PresetData data = getNpc(stack);
+    StationNpcData data = getNpc(stack);
     if (data == null) {
       tooltip.accept(Component.translatable("item.easy_npc_trading_station.npc_catcher.empty"));
     } else {

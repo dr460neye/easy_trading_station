@@ -1,7 +1,7 @@
 package de.dragoni.tradingstation.station;
 
-import de.markusbordihn.easynpc.data.preset.PresetData;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.dragoni.tradingstation.station.StationNpcData;
+import de.dragoni.tradingstation.compat.EasyNpcCompat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.core.Direction;
@@ -20,7 +20,7 @@ public final class StationNpc {
   private StationNpc() {}
 
   /** Creates the entity without adding it to the level; null if the preset can not be built. */
-  public static Entity create(Level level, PresetData data, EntitySpawnReason reason) {
+  public static Entity create(Level level, StationNpcData data, EntitySpawnReason reason) {
     if (data == null || !data.hasValidData()) {
       return null;
     }
@@ -29,9 +29,8 @@ public final class StationNpc {
       return null;
     }
     var tag = data.data().copy();
-    if (entity instanceof EasyNPC<?> npc) {
-      npc.registerEasyNPCDefaultData();
-      npc.getEasyNPCPresetData().importPresetData(tag);
+    if (EasyNpcCompat.is(entity)) {
+      EasyNpcCompat.configure(entity, tag);
     } else {
       entity.load(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag));
       entity.removeTag(StationSessions.TRANSIENT_TAG);
@@ -104,9 +103,9 @@ public final class StationNpc {
   }
 
   /** Copies the station's own bookkeeping keys of the old data into the new data. */
-  public static de.markusbordihn.easynpc.data.preset.PresetData carryKeys(
-      de.markusbordihn.easynpc.data.preset.PresetData from,
-      de.markusbordihn.easynpc.data.preset.PresetData to) {
+  public static de.dragoni.tradingstation.station.StationNpcData carryKeys(
+      de.dragoni.tradingstation.station.StationNpcData from,
+      de.dragoni.tradingstation.station.StationNpcData to) {
     if (from == null || to == null) {
       return to;
     }
@@ -116,13 +115,13 @@ public final class StationNpc {
         tag.put(key, from.data().get(key).copy());
       }
     }
-    return new de.markusbordihn.easynpc.data.preset.PresetData(to.entityType(), tag);
+    return new de.dragoni.tradingstation.station.StationNpcData(to.entityType(), tag);
   }
 
   /** Releases a stored non-Easy-NPC entity at the position. */
   public static boolean spawnGeneric(
       net.minecraft.server.level.ServerLevel level,
-      de.markusbordihn.easynpc.data.preset.PresetData data,
+      de.dragoni.tradingstation.station.StationNpcData data,
       BlockPos pos,
       float yaw) {
     Entity entity = create(level, data, EntitySpawnReason.SPAWN_ITEM_USE);
@@ -140,7 +139,7 @@ public final class StationNpc {
    * villager its profession, otherwise the name of the entity type.
    */
   public static net.minecraft.network.chat.Component title(
-      de.markusbordihn.easynpc.data.preset.PresetData data) {
+      de.dragoni.tradingstation.station.StationNpcData data) {
     var named = de.dragoni.tradingstation.item.NpcCatcherItem.nameComponent(data);
     if (named != null) {
       return named;

@@ -29,7 +29,7 @@ Each NPC needs its workstation in the station (configurable per NPC).
 
 [[dependencies.${mod_id}]]
     modId="easy_npc"
-    type="required"
+    type="optional"
     versionRange="${easy_npc_version_range}"
     ordering="AFTER"
     side="BOTH"

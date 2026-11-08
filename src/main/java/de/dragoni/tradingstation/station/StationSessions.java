@@ -2,10 +2,8 @@ package de.dragoni.tradingstation.station;
 
 import de.dragoni.tradingstation.TradingStationMod;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
-import de.markusbordihn.easynpc.api.action.EasyNPCActionHandler;
-import de.markusbordihn.easynpc.api.handler.EasyNPCPauseHandler;
-import de.markusbordihn.easynpc.data.preset.PresetData;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.dragoni.tradingstation.station.StationNpcData;
+import de.dragoni.tradingstation.compat.EasyNpcCompat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,7 +23,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * Server side. A station holds only {@code PresetData}. While a player talks or trades, one paused,
+ * Server side. A station holds only {@code StationNpcData}. While a player talks or trades, one paused,
  * invulnerable entity exists in the level; when the menu closes its state is written back and it is
  * discarded again. Nothing exists (or ticks) while no one is using a station.
  */
@@ -113,7 +111,7 @@ public final class StationSessions {
       sendMissingWorkstation(player, station);
       return;
     }
-    PresetData stored = prepareStoredData(level, station);
+    StationNpcData stored = prepareStoredData(level, station);
     Entity entity = StationNpc.create(level, stored, EntitySpawnReason.LOAD);
     if (entity == null) {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.failed"));
@@ -123,7 +121,7 @@ public final class StationSessions {
         && stored.data().getLongOr(StationNpc.RESTOCK_KEY, -1L) == level.getOverworldClockTime()) {
       villager.restock();
     }
-    if (entity instanceof net.minecraft.world.entity.Mob mob && !(entity instanceof EasyNPC<?>)) {
+    if (entity instanceof net.minecraft.world.entity.Mob mob && !EasyNpcCompat.is(entity)) {
       mob.setNoAi(true);
       mob.setSilent(true);
       mob.setPersistenceRequired();
@@ -141,8 +139,8 @@ public final class StationSessions {
     station.setInUse(true);
     entity.setInvulnerable(true);
     entity.addTag(TRANSIENT_TAG);
-    if (entity instanceof EasyNPC<?> npc) {
-      EasyNPCPauseHandler.pause(npc);
+    if (EasyNpcCompat.is(entity)) {
+      EasyNpcCompat.pause(entity);
     }
     // Register first: the join guard in StationEvents cancels transient entities without a session.
     SESSIONS.put(player.getUUID(), new Session(level, station.getBlockPos(), entity, wasInvulnerable, originalScale));
@@ -155,8 +153,8 @@ public final class StationSessions {
 
     boolean handled = false;
     try {
-      if (entity instanceof EasyNPC<?> npc) {
-        npc.getEasyNPCTradingData().resetExpiredTradingOffers();
+      if (EasyNpcCompat.is(entity)) {
+        EasyNpcCompat.resetExpiredOffers(entity);
       }
       // Fire the same event a normal right-click fires, so scripts (KubeJS shops, quests) see it,
       // then fall back to the NPC's own interaction (security, action, dialog, trading).
@@ -167,12 +165,8 @@ public final class StationSessions {
         result = player.interactOn(entity, InteractionHand.MAIN_HAND, hit.getLocation());
       }
       handled = result != null && result.consumesAction();
-      if (!handled && entity instanceof EasyNPC<?> npc) {
-        if (npc.getEasyNPCTradingData().hasTradingData()) {
-          handled = EasyNPCActionHandler.openTradingScreen(npc, player);
-        } else if (npc.getEasyNPCDialogData().hasDialog()) {
-          handled = EasyNPCActionHandler.openDialog(npc, player);
-        }
+      if (!handled && EasyNpcCompat.is(entity)) {
+        handled = EasyNpcCompat.openFallback(entity, player);
       }
     } catch (RuntimeException e) {
       TradingStationMod.LOGGER.error("Station interaction failed", e);
@@ -188,8 +182,8 @@ public final class StationSessions {
    * in the stored data and the station is updated before the entity is built from it.
    */
   // The day clock is used, not the game time: sleeping moves the day clock but not the game time.
-  private static PresetData prepareStoredData(ServerLevel level, TradingStationBlockEntity station) {
-    PresetData stored = station.getNpc();
+  private static StationNpcData prepareStoredData(ServerLevel level, TradingStationBlockEntity station) {
+    StationNpcData stored = station.getNpc();
     if (StationNpc.isEasyNpc(stored.entityType())) {
       return stored;
     }
@@ -211,7 +205,7 @@ public final class StationSessions {
     if (!changed) {
       return stored;
     }
-    stored = new PresetData(stored.entityType(), tag);
+    stored = new StationNpcData(stored.entityType(), tag);
     station.setNpc(stored);
     return stored;
   }
@@ -280,7 +274,7 @@ public final class StationSessions {
     done.forEach(StationSessions::finish);
   }
 
-  private static PresetData station(Session session) {
+  private static StationNpcData station(Session session) {
     return session.level.getBlockEntity(session.stationPos) instanceof TradingStationBlockEntity be
         ? be.getNpc()
         : null;
@@ -292,22 +286,22 @@ public final class StationSessions {
       return;
     }
     Entity entity = session.entity;
-    PresetData updated = null;
+    StationNpcData updated = null;
     try {
       if (entity instanceof Merchant merchant) {
         merchant.setTradingPlayer(null);
       }
-      if (entity instanceof EasyNPC<?> npc && entity.isAlive()) {
-        EasyNPCPauseHandler.resume(npc);
+      if (EasyNpcCompat.is(entity) && entity.isAlive()) {
+        EasyNpcCompat.resume(entity);
         if (entity instanceof net.minecraft.world.entity.LivingEntity living
             && living.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE) != null) {
           living.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE)
               .setBaseValue(session.originalScale);
         }
         entity.setInvulnerable(session.wasInvulnerable);
-        var tag = npc.getEasyNPCPresetData().serializePresetData();
-        updated = NpcOrigin.carryOver(station(session), new PresetData(entity.getType(), tag));
-      } else if (!(entity instanceof EasyNPC<?>) && entity.isAlive()) {
+        var tag = EasyNpcCompat.serialize(entity);
+        updated = NpcOrigin.carryOver(station(session), new StationNpcData(entity.getType(), tag));
+      } else if (!EasyNpcCompat.is(entity) && entity.isAlive()) {
         if (entity instanceof net.minecraft.world.entity.LivingEntity living
             && living.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE) != null) {
           living.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE)
@@ -320,7 +314,7 @@ public final class StationSessions {
         }
         updated =
             StationNpc.carryKeys(
-                station(session), new PresetData(entity.getType(), StationNpc.entityTag(entity)));
+                station(session), new StationNpcData(entity.getType(), StationNpc.entityTag(entity)));
       }
     } catch (RuntimeException e) {
       TradingStationMod.LOGGER.error("Could not read back NPC state, keeping previous data", e);

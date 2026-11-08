@@ -5,7 +5,7 @@ import de.dragoni.tradingstation.config.UpgradeRules;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
 import de.dragoni.tradingstation.item.StationUpgradeItem;
 import de.dragoni.tradingstation.registry.ModDataComponents;
-import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.dragoni.tradingstation.station.StationNpcData;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -83,7 +83,7 @@ public class StationContainer implements Container {
   @Override
   public void setItem(int slot, ItemStack stack) {
     if (slot == NPC_SLOT) {
-      PresetData data = stack.isEmpty() ? null : NpcCatcherItem.getNpc(stack);
+      StationNpcData data = stack.isEmpty() ? null : NpcCatcherItem.getNpc(stack);
       station.setNpc(data);
       refreshNpcStack();
     } else if (slot == WORKSTATION_SLOT) {
@@ -121,7 +121,7 @@ public class StationContainer implements Container {
 
   /** Upgrade kind the NPC in this catcher needs ("" = none). Same result on client and server. */
   public static String requiredUpgrade(ItemStack catcher) {
-    PresetData data = catcher.isEmpty() ? null : NpcCatcherItem.getNpc(catcher);
+    StationNpcData data = catcher.isEmpty() ? null : NpcCatcherItem.getNpc(catcher);
     return data == null
         ? UpgradeRules.NONE
         : TradingStationConfig.requiredUpgrade(data.entityType(), NpcCatcherItem.npcName(data));

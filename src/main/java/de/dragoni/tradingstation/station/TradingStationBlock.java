@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
 import de.dragoni.tradingstation.item.StationUpgradeItem;
 import de.dragoni.tradingstation.registry.ModDataComponents;
-import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.dragoni.tradingstation.station.StationNpcData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -187,7 +187,7 @@ public class TradingStationBlock extends Block implements EntityBlock {
     if (stack.getItem() instanceof StationUpgradeItem) {
       return installUpgrade(player, station, stack, level);
     }
-    PresetData carried =
+    StationNpcData carried =
         stack.getItem() instanceof NpcCatcherItem ? NpcCatcherItem.getNpc(stack) : null;
     if (carried != null) {
       // quick insert: right-click with a filled catcher

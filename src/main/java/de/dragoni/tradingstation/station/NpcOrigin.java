@@ -1,7 +1,7 @@
 package de.dragoni.tradingstation.station;
 
 import de.dragoni.tradingstation.TradingStationMod;
-import de.markusbordihn.easynpc.data.preset.PresetData;
+import de.dragoni.tradingstation.station.StationNpcData;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -25,11 +25,11 @@ import net.minecraft.world.level.Level;
 public final class NpcOrigin {
 
   private static final String KEY = "TradingStationOrigin";
-  private static final List<PresetData> PENDING = new ArrayList<>();
+  private static final List<StationNpcData> PENDING = new ArrayList<>();
 
   private NpcOrigin() {}
 
-  public static PresetData mark(PresetData data, Level level, BlockPos pos) {
+  public static StationNpcData mark(StationNpcData data, Level level, BlockPos pos) {
     CompoundTag tag = data.data().copy();
     CompoundTag origin = new CompoundTag();
     origin.putString("dim", level.dimension().identifier().toString());
@@ -37,25 +37,25 @@ public final class NpcOrigin {
     origin.putInt("y", pos.getY());
     origin.putInt("z", pos.getZ());
     tag.put(KEY, origin);
-    return new PresetData(data.entityType(), tag);
+    return new StationNpcData(data.entityType(), tag);
   }
 
-  public static boolean has(PresetData data) {
+  public static boolean has(StationNpcData data) {
     return data != null && data.data().contains(KEY);
   }
 
   /** The entity writes its preset back without our key, so carry it over. */
-  public static PresetData carryOver(PresetData from, PresetData to) {
+  public static StationNpcData carryOver(StationNpcData from, StationNpcData to) {
     if (from == null || to == null || !has(from) || has(to)) {
       return to;
     }
     CompoundTag tag = to.data().copy();
     tag.put(KEY, from.data().get(KEY).copy());
-    return new PresetData(to.entityType(), tag);
+    return new StationNpcData(to.entityType(), tag);
   }
 
   /** Called when a filled catcher with an origin was destroyed. Processed on the next tick. */
-  public static synchronized void queueDeath(PresetData data) {
+  public static synchronized void queueDeath(StationNpcData data) {
     PENDING.add(data);
   }
 
@@ -63,9 +63,9 @@ public final class NpcOrigin {
     if (PENDING.isEmpty()) {
       return;
     }
-    List<PresetData> work = List.copyOf(PENDING);
+    List<StationNpcData> work = List.copyOf(PENDING);
     PENDING.clear();
-    for (PresetData data : work) {
+    for (StationNpcData data : work) {
       try {
         die(server, data);
       } catch (RuntimeException e) {
@@ -74,7 +74,7 @@ public final class NpcOrigin {
     }
   }
 
-  private static void die(MinecraftServer server, PresetData data) {
+  private static void die(MinecraftServer server, StationNpcData data) {
     CompoundTag origin = data.data().getCompound(KEY).orElse(null);
     if (origin == null) {
       return;

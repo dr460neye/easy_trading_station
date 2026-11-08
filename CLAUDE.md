@@ -14,7 +14,7 @@ Mod id `easy_npc_trading_station`, package `de.dragoni.tradingstation`, Java 25,
 - Station = own block per variant (`futuristic`, `stone`, wood types), blockstates `FACING` + `PART` (4 parts), BlockEntity only on `BACK_LOW`.
 - Variants are **data** (`StationVariant`): built-ins + modded `WoodType`s + `config/easy_npc_trading_station-extra-variants.txt` (COMMON configs are not loaded during registration). Never hard-code a block class per wood (story S6.10).
 - Workstation = item in a station slot, rendered visually only; empty slot -> config default.
-- Keep NPC logic generic (preset = entity type + NBT) so later versions can catch non-Easy-NPC mobs.
+- Keep NPC logic generic: `StationNpcData` = entity type + NBT. **Easy NPC is an optional dependency**: only `compat/EasyNpcImpl` may import Easy NPC classes; everything else goes through `compat/EasyNpcCompat` (checks that it is installed). Never import `de.markusbordihn.*` anywhere else.
 
 ## Commands (Windows, PowerShell)
 Gradle needs the JDK from `java_version` in `gradle.properties` (25): set `JAVA_HOME` (own path in git-ignored `tools/local.json` as `javaHome`) then `.\gradlew.bat <task>`. See skill `build-run`. Unit tests: `.\gradlew.bat test`.

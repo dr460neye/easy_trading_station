@@ -4,7 +4,7 @@ import de.dragoni.tradingstation.TradingStationMod;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
 import de.dragoni.tradingstation.station.StationNpc;
 import de.dragoni.tradingstation.station.StationSessions;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.dragoni.tradingstation.compat.EasyNpcCompat;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -36,7 +36,7 @@ public class NpcCatcherEvents {
       TradingStationMod.LOGGER.info(
           "Catcher used on {} (EasyNPC={}, filled={})",
           event.getTarget().getType(),
-          event.getTarget() instanceof EasyNPC<?>,
+          EasyNpcCompat.is(event.getTarget()),
           NpcCatcherItem.isFilled(stack));
     }
     if (NpcCatcherItem.isFilled(stack)) {
@@ -50,7 +50,7 @@ public class NpcCatcherEvents {
       }
       return;
     }
-    if (!(event.getTarget() instanceof EasyNPC<?>) && !StationNpc.isGenericSupported(event.getTarget())) {
+    if (!EasyNpcCompat.is(event.getTarget()) && !StationNpc.isGenericSupported(event.getTarget())) {
       if (server && event.getTarget() instanceof LivingEntity && event.getEntity() instanceof ServerPlayer p) {
         p.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.unsupported"));
       }
