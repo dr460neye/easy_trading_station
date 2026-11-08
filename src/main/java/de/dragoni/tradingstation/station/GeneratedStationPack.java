@@ -167,7 +167,7 @@ public class GeneratedStationPack {
   private static void write(StationVariant variant) throws IOException {
     String id = variant.id();
     String style = variant.futuristic() ? "futuristic" : "medieval";
-    String base = variant.baseBlock().getNamespace() + ":block/" + variant.baseBlock().getPath();
+    String base = BlockTextures.of(variant.baseBlock()).toString();
     String glass =
         variant.futuristic() ? "minecraft:block/light_blue_stained_glass" : "minecraft:block/glass";
     String podium = variant.futuristic() ? "minecraft:block/iron_block" : "minecraft:block/smooth_stone";

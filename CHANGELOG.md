@@ -19,6 +19,7 @@ release. Put the most important entries first and keep a bullet's first sentence
   share one entity type, so names are the way to treat individual shopkeepers differently.
 
 ### Fixed
+- Stations of modded woods use the texture the planks really have (Blood Wood and Lunar showed the pink missing texture because their texture files are named differently).
 - More modded woods get a station automatically: every planks block in another mod's `minecraft:planks` tag is found, not only registered wood types (for example Menril, Rowan, Alder, Hawthorn, Occultism's Otherworld wood).
 - NPCs in claimed or otherwise protected areas can no longer be caught: the catcher asks claim and protection mods first, in the same way as for breaking a block there.
 - Workstations made of two parts (doors, tall plants, beds) are shown completely; they are scaled to stay inside the front cell of the booth.
