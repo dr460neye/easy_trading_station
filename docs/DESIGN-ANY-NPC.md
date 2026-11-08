@@ -146,6 +146,11 @@ have more than one workstation" needs; the requirement parser already handles al
   | Wandering Trader upgrade | wandering traders; their offers are reset once per day |
   | Bartering upgrade (long list, later) | piglins (bartering) |
 
+  Recipes (decided by the maintainer): the Advanced upgrade is the expensive one (emeralds, emerald
+  block, netherite ingot, redstone block, gold block, three mob heads). The Wandering Trader
+  upgrade is much cheaper: 1 diamond block, 2 diamonds, 1 emerald, 1 ender pearl, 1 torch, 3 logs.
+  The exact shapes are in issue S8.1.
+
   The requirement per NPC is a config list `match=UPGRADE` (entity type id or part of the name,
   first match wins). Defaults: Easy NPC types -> advanced, `minecraft:wandering_trader` ->
   wandering, `minecraft:villager` -> none.
