@@ -1,0 +1,64 @@
+name: Pre-release
+
+# Automatic: every push to main or mc/* that changes the mod publishes a GitHub pre-release
+# <mod_version>-beta.<run number>. It never goes to CurseForge by itself.
+# Manual: Actions -> Pre-release -> Run workflow, tick "curseforge" to also upload it as a Beta.
+# See docs/RELEASING.md.
+on:
+  push:
+    branches: ["main", "mc/**"]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "curseforge/**"
+      - ".github/**"
+      - "LICENSE"
+  workflow_dispatch:
+    inputs:
+      curseforge:
+        description: "Also upload to CurseForge as Beta"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prerelease-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      skip: ${{ steps.v.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pre-release version
+        id: v
+        run: |
+          MC="$(grep '^minecraft_version=' gradle.properties | cut -d= -f2)"
+          BASE="$(grep '^mod_version=' gradle.properties | cut -d= -f2)"
+          if ! echo "$BASE" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::mod_version on a branch must be the next stable version (1.2.0), got $BASE"; exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$MC-$BASE" > /dev/null; then
+            echo "::warning::$BASE is already released. Set mod_version to the next version to get pre-releases again."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "version=$BASE-beta.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: plan
+    if: ${{ needs.plan.outputs.skip != 'true' }}
+    uses: ./.github/workflows/publish.yml
+    with:
+      version: ${{ needs.plan.outputs.version }}
+      curseforge: ${{ github.event_name == 'workflow_dispatch' && inputs.curseforge }}
+    secrets: inherit

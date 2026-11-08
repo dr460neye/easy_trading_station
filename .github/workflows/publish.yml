@@ -1,0 +1,123 @@
+name: Publish
+
+# Reusable building block, called by "Release" (manual) and "Pre-release" (automatic / manual).
+# Builds the commit it runs on with the given version, creates the tag and the GitHub release and,
+# when asked, uploads the same jar to CurseForge. See docs/RELEASING.md.
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: "Final version of the file, e.g. 1.2.0 or 1.2.0-beta.7"
+        type: string
+        required: true
+      curseforge:
+        description: "Upload to CurseForge"
+        type: boolean
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ inputs.version }}
+      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+      CURSEFORGE_PROJECT_ID: ${{ vars.CURSEFORGE_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check version and settings
+        id: meta
+        run: |
+          MC="$(grep '^minecraft_version=' gradle.properties | cut -d= -f2)"
+          JAVA="$(grep '^java_version=' gradle.properties | cut -d= -f2)"
+          BASE="$(grep '^mod_version=' gradle.properties | cut -d= -f2)"
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?$'; then
+            echo "::error::$VERSION is not a valid version (MAJOR.MINOR.PATCH[-alpha.N|-beta.N|-rc.N])"; exit 1
+          fi
+          case "$VERSION" in
+            *-alpha.*) TYPE=alpha; PRE=true ;;
+            *-beta.*|*-rc.*) TYPE=beta; PRE=true ;;
+            *) TYPE=release; PRE=false ;;
+          esac
+          TAG="$MC-$VERSION"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" > /dev/null; then
+            echo "::error::Tag $TAG already exists"; exit 1
+          fi
+          if [ "$INPUT_CURSEFORGE" = "true" ] && { [ -z "$CURSEFORGE_TOKEN" ] || [ -z "$CURSEFORGE_PROJECT_ID" ]; }; then
+            echo "::error::CurseForge upload requested, but the secret CURSEFORGE_TOKEN or the variable CURSEFORGE_PROJECT_ID is missing"; exit 1
+          fi
+          {
+            echo "tag=$TAG"; echo "mc=$MC"; echo "java=$JAVA"; echo "base=$BASE"
+            echo "type=$TYPE"; echo "prerelease=$PRE"
+            echo "title=Easy Trading Station $VERSION (NeoForge $MC)"
+            echo "jar=build/libs/easy-trading-station-neoforge-$MC-$VERSION.jar"
+          } >> "$GITHUB_OUTPUT"
+        env:
+          INPUT_CURSEFORGE: ${{ inputs.curseforge }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ steps.meta.outputs.java }}
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Generated assets are up to date
+        run: |
+          python3 tools/generate_station_assets.py
+          git diff --exit-code -- src/main/resources
+
+      # -Pmod_version overrides gradle.properties, so automatic pre-releases carry their own version.
+      - name: Build and test
+        run: ./gradlew build -Pmod_version="$VERSION" --console=plain
+
+      - name: Check jar name
+        run: test -f "${{ steps.meta.outputs.jar }}" || (echo "::error::Expected jar not found"; ls build/libs; exit 1)
+
+      - name: Release notes
+        env:
+          TYPE: ${{ steps.meta.outputs.type }}
+          BASE: ${{ steps.meta.outputs.base }}
+        run: |
+          if [ "$TYPE" = "release" ]; then
+            python3 tools/changelog_section.py "$VERSION" > RELEASE_NOTES.md
+          else
+            {
+              echo "Automated pre-release build of commit \`${GITHUB_SHA::7}\`. Not meant for worlds you care about."
+              echo
+              (python3 tools/changelog_section.py Unreleased || python3 tools/changelog_section.py "$BASE") 2> /dev/null || true
+            } > RELEASE_NOTES.md
+          fi
+
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          TITLE: ${{ steps.meta.outputs.title }}
+          JAR: ${{ steps.meta.outputs.jar }}
+          PRERELEASE: ${{ steps.meta.outputs.prerelease }}
+        run: |
+          FLAGS="--latest"
+          if [ "$PRERELEASE" = "true" ]; then FLAGS="--prerelease"; fi
+          gh release create "$TAG" "$JAR" --target "$GITHUB_SHA" --title "$TITLE" --notes-file RELEASE_NOTES.md $FLAGS
+
+      - name: Publish to CurseForge
+        if: ${{ inputs.curseforge }}
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          curseforge-id: ${{ env.CURSEFORGE_PROJECT_ID }}
+          curseforge-token: ${{ env.CURSEFORGE_TOKEN }}
+          files: ${{ steps.meta.outputs.jar }}
+          name: ${{ steps.meta.outputs.title }}
+          version: ${{ inputs.version }}
+          version-type: ${{ steps.meta.outputs.type }}
+          changelog-file: RELEASE_NOTES.md
+          loaders: neoforge
+          game-versions: ${{ steps.meta.outputs.mc }}
+          java: ${{ steps.meta.outputs.java }}
+          dependencies: |
+            easy-npc(required){curseforge:easy-npc}
+          fail-mode: fail

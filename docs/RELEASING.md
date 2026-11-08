@@ -15,11 +15,11 @@ Example: mod version `1.2.0` for Minecraft `26.1.2` on NeoForge.
 
 | Thing | Pattern | Example |
 |-------|---------|---------|
-| Mod version (`mod_version`) | `MAJOR.MINOR.PATCH[-alpha.N \| -beta.N \| -rc.N]` | `1.2.0`, `1.3.0-beta.1` |
+| Mod version | `MAJOR.MINOR.PATCH`; pre-releases `MAJOR.MINOR.PATCH-beta.N` (N = workflow run number) | `1.2.0`, `1.3.0-beta.12` |
 | Jar file | `easy-trading-station-neoforge-<minecraft>-<version>.jar` | `easy-trading-station-neoforge-26.1.2-1.2.0.jar` |
-| Git tag | `<minecraft>-<version>` | `26.1.2-1.2.0` |
+| Git tag (created by the workflow) | `<minecraft>-<version>` | `26.1.2-1.2.0`, `26.1.2-1.3.0-beta.12` |
 | GitHub release / CurseForge file name | `Easy Trading Station <version> (NeoForge <minecraft>)` | `Easy Trading Station 1.2.0 (NeoForge 26.1.2)` |
-| CurseForge release type | from the suffix | no suffix = **Release**, `-beta`/`-rc` = **Beta**, `-alpha` = **Alpha** |
+| CurseForge release type | from the suffix | no suffix = **Release**, `-beta` = **Beta** |
 
 The jar name follows the usual CurseForge scheme *name – loader – Minecraft version – mod version*.
 The Minecraft version is part of the tag and the file name, so the same mod version number can
@@ -39,8 +39,8 @@ Counted from the point of view of players and modpack makers:
 | **MINOR** | new, compatible | new station styles, new config options (with defaults), new features |
 | **PATCH** | fixes | bug fixes, performance, translations, docs-only changes that ship |
 
-Pre-releases use `-alpha.N` (early tests), `-beta.N` (feature complete, being tested) and `-rc.N`
-(release candidate, published as Beta on CurseForge). They are marked *pre-release* on GitHub.
+Pre-releases are `-beta.N` versions made by the pipeline. They are marked *pre-release* on GitHub
+and are *Beta* on CurseForge.
 
 Every change that players could notice goes into `CHANGELOG.md` under `## [Unreleased]` in the same
 pull request.
@@ -49,53 +49,75 @@ pull request.
 
 ## Releasing step by step
 
-1. Make sure `main` is green (the **Build** workflow) and `CHANGELOG.md` → `## [Unreleased]`
-   describes the release.
+There are two kinds of builds, both made by GitHub Actions from a pushed commit:
+
+| | Pre-release | Release |
+|---|-------------|---------|
+| Started | **automatically** on every push to `main` / `mc/*` that changes the mod (not for docs-only or `.github/` changes) | **manually**: Actions → **Release** → Run workflow |
+| Version | `<mod_version>-beta.<run number>`, for example `1.1.0-beta.12` | `<mod_version>`, for example `1.1.0` |
+| GitHub | pre-release | release (marked latest) |
+| CurseForge | never by itself; on request as **Beta** | **always**, as Release |
+| Release notes | `[Unreleased]` section of `CHANGELOG.md` | section `[1.1.0]` of `CHANGELOG.md` (the run stops if it is missing or empty) |
+
+`mod_version` in `gradle.properties` always means *the next stable version*. Pre-releases are
+numbered below it (`1.1.0-beta.12` sorts before `1.1.0`).
+
+### Make a release
+
+1. `main` is green (**Build** workflow) and `CHANGELOG.md` → `## [Unreleased]` describes the release.
 2. Prepare locally:
 
    ```powershell
-   python tools/prepare_release.py 1.2.0
+   python tools/prepare_release.py 1.1.0
    ```
 
-   It sets `mod_version` in `gradle.properties`, turns `[Unreleased]` into `[1.2.0] - <date>` and
-   prints the next commands. It never pushes.
-3. Review the diff, then run the printed commands:
+   It sets `mod_version`, turns `[Unreleased]` into `[1.1.0] - <date>` and prints the next commands.
+   It never pushes.
+3. Review, commit and push:
 
    ```powershell
-   git commit -am "chore(release): 1.2.0"
-   git tag 26.1.2-1.2.0
-   git push origin HEAD 26.1.2-1.2.0
+   git commit -am "chore(release): 1.1.0"
+   git push
    ```
 
-4. The **Release** workflow starts by itself on the tag. When it is done the GitHub release exists
-   and (if configured) the file is on CurseForge.
+4. GitHub → **Actions** → **Release** → *Run workflow* on `main` (or `mc/<version>`), enter `1.1.0`.
+   The version has to match `mod_version`; that is a safety check against releasing the wrong state.
+   The workflow builds, tests, creates the tag `26.1.2-1.1.0` and the GitHub release, and uploads the
+   jar to CurseForge.
+5. Set `mod_version` to the next planned version (for example `1.1.1` or `1.2.0`) and push.
+   Until you do, automatic pre-releases are skipped with a warning, because `1.1.0` is already released.
 
-The very first release (`26.1.2-1.0.0`) needs no `prepare_release.py`: `CHANGELOG.md` and
-`mod_version` already say 1.0.0, so commit and tag directly.
+### Pre-releases
 
-If the workflow fails before the release exists (for example a wrong tag), fix the problem, delete
-the tag (`git push --delete origin <tag>`, `git tag -d <tag>`) and tag again.
+- Nothing to do: push to `main` and a few minutes later the GitHub pre-release with the jar exists.
+- To test a build on CurseForge: Actions → **Pre-release** → *Run workflow*, tick **curseforge**.
+  The file appears there as *Beta*.
+
+If a workflow fails before the release exists, fix the problem and run it again. If it failed after
+the GitHub release was created (for example the CurseForge upload), delete the release and tag first
+(`gh release delete <tag> --cleanup-tag`), otherwise the rerun stops with "Tag already exists".
 
 ---
 
 ## What the pipeline does
 
-**Build** (`.github/workflows/build.yml`, every push and pull request)
+**Build** (`build.yml`, every push and pull request)
 1. Reads `java_version` from `gradle.properties` and installs exactly that Temurin JDK.
 2. Checks that the generated station assets are up to date
    (`tools/generate_station_assets.py` must not change anything).
 3. `./gradlew build`: compile, unit tests, jar.
 4. Uploads the jar as a workflow artifact (14 days) and the test report on failure.
 
-**Release** (`.github/workflows/release.yml`, on tags `<minecraft>-<version>`)
-1. Checks that tag, `minecraft_version` and `mod_version` agree and that the version is valid.
-2. Builds and tests, checks that the jar has the expected name.
-3. Takes the release notes from the matching `CHANGELOG.md` section
-   (`tools/changelog_section.py`; the release stops if the section is missing or empty).
-4. Creates the **GitHub release** (jar attached, pre-release flag for alpha/beta/rc).
-5. Uploads the same jar to **CurseForge** with game version, loader `neoforge`, Java version,
-   release type, changelog and the required dependency *Easy NPC*. Skipped if the token or project
-   id is not configured.
+**Publish** (`publish.yml`, reusable; called by *Release* and *Pre-release*)
+1. Validates the version, refuses an existing tag and, if CurseForge was requested, a missing
+   token or project id (no silent skip).
+2. Builds and tests with `-Pmod_version=<version>`, checks the jar name.
+3. Writes the release notes, creates the tag on the built commit and the **GitHub release**
+   with the jar.
+4. Uploads the same jar to **CurseForge** (if requested) with game version, loader `neoforge`,
+   Java version, release type, changelog and the required dependency *Easy NPC*.
+
+**Release** and **Pre-release** only decide the version and whether CurseForge is used.
 
 ---
 
@@ -108,7 +130,8 @@ the tag (`git push --delete origin <tag>`, `git tag -d <tag>`) and tag again.
 | Tag protection (recommended) | Settings → Rules → Rulesets | protect tags `*-*.*.*` against deletion/rewriting |
 | Branch protection (recommended) | Settings → Branches | require the **Build** check for `main` and for `mc/*` |
 
-`GITHUB_TOKEN` is provided automatically; the workflow only asks for `contents: write`.
+`GITHUB_TOKEN` is provided automatically. Releases need both CurseForge values; without them the
+**Release** workflow stops before it publishes anything.
 
 The CurseForge step uses the community action
 [`Kir-Antipov/mc-publish`](https://github.com/Kir-Antipov/mc-publish). If you want it pinned
@@ -128,11 +151,11 @@ Gradle, the mod metadata, the jar name, CI and the release workflow:
 
 | Property | Used for |
 |----------|----------|
-| `minecraft_version`, `minecraft_version_range` | Gradle, `neoforge.mods.toml`, jar name, tag check, CurseForge game version |
+| `minecraft_version`, `minecraft_version_range` | Gradle, `neoforge.mods.toml`, jar name, tag, CurseForge game version |
 | `neo_version`, `loader_version_range` | NeoForge dependency, mod metadata |
-| `java_version` | Gradle toolchain, `setup-java` in both workflows, CurseForge Java tag |
+| `java_version` | Gradle toolchain, `setup-java` in the workflows, CurseForge Java tag |
 | `easy_npc_version_id`, `easy_npc_version_range` | compile dependency (Modrinth maven version id), required dependency in the mod metadata |
-| `mod_version` | SemVer of the mod itself |
+| `mod_version` | next stable version of the mod (SemVer); pre-releases are numbered below it |
 
 ### Branch model
 
@@ -144,8 +167,8 @@ One branch per Minecraft line, same pipeline files on every branch:
 | `mc/<version>` (for example `mc/1.21.1`) | maintenance branch for an older Minecraft version |
 
 - A new Minecraft version: create the branch from `main` (or promote the new line to `main` and
-  move the old one to `mc/<old>`), change the properties above, fix compile errors, tag
-  `<new minecraft>-<version>`.
+  move the old one to `mc/<old>`), change the properties above, fix compile errors and run
+  the **Release** workflow on that branch (tag `<new minecraft>-<version>`).
 - Fixes: land on `main`, then `git cherry-pick -x` to the `mc/*` branches that are still supported.
 - Each branch is versioned independently, so `26.1.2-1.3.0` and `1.21.1-1.2.1` are both valid and
   show up as separate CurseForge files of one project.

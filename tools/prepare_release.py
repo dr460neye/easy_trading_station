@@ -1,13 +1,14 @@
 """Prepares a release locally: sets mod_version, closes the [Unreleased] changelog section and prints
-the git commands for commit and tag. It never pushes.
-Usage: python tools/prepare_release.py 1.1.0   (or 1.1.0-beta.1)"""
+the git commands for the commit. It never pushes. The release itself is started by hand
+(GitHub -> Actions -> Release); pre-releases are made automatically from the pushed commits.
+Usage: python tools/prepare_release.py 1.1.0"""
 import datetime
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SEMVER = re.compile(r"^\d+\.\d+\.\d+(-(alpha|beta|rc)\.\d+)?$")
+SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
 
 
 def prop(text: str, key: str) -> str:
@@ -16,7 +17,7 @@ def prop(text: str, key: str) -> str:
 
 def main() -> int:
     if len(sys.argv) != 2 or not SEMVER.match(sys.argv[1]):
-        print("Usage: prepare_release.py MAJOR.MINOR.PATCH[-alpha.N|-beta.N|-rc.N]", file=sys.stderr)
+        print("Usage: prepare_release.py MAJOR.MINOR.PATCH", file=sys.stderr)
         return 2
     version = sys.argv[1]
     props_path = ROOT / "gradle.properties"
@@ -34,12 +35,11 @@ def main() -> int:
     log_path.write_text(log, encoding="utf-8")
     props_path.write_text(re.sub(r"^mod_version=.*$", f"mod_version={version}", props, flags=re.M), encoding="utf-8")
 
-
-    tag = f"{mc}-{version}"
     print(f"Prepared {version} for Minecraft {mc}. Review the changes, then:")
     print(f'  git commit -am "chore(release): {version}"')
-    print(f"  git tag {tag}")
-    print(f"  git push origin HEAD {tag}")
+    print("  git push")
+    print(f"and start GitHub -> Actions -> Release with the version {version}.")
+    print("Afterwards set mod_version to the next planned version and add a new [Unreleased] entry.")
     return 0
 
 
