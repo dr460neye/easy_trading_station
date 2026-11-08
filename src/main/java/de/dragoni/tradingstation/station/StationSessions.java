@@ -120,7 +120,7 @@ public final class StationSessions {
       return;
     }
     if (entity instanceof net.minecraft.world.entity.npc.villager.Villager villager
-        && stored.data().getLongOr(StationNpc.RESTOCK_KEY, -1L) == level.getGameTime()) {
+        && stored.data().getLongOr(StationNpc.RESTOCK_KEY, -1L) == level.getOverworldClockTime()) {
       villager.restock();
     }
     if (entity instanceof net.minecraft.world.entity.Mob mob && !(entity instanceof EasyNPC<?>)) {
@@ -187,12 +187,13 @@ public final class StationSessions {
    * trader in a station with the wandering upgrade gets new offers once per day. The marks are saved
    * in the stored data and the station is updated before the entity is built from it.
    */
+  // The day clock is used, not the game time: sleeping moves the day clock but not the game time.
   private static PresetData prepareStoredData(ServerLevel level, TradingStationBlockEntity station) {
     PresetData stored = station.getNpc();
     if (StationNpc.isEasyNpc(stored.entityType())) {
       return stored;
     }
-    long now = level.getGameTime();
+    long now = level.getOverworldClockTime();
     net.minecraft.nbt.CompoundTag tag = stored.data().copy();
     boolean changed = false;
     if (stored.entityType() == net.minecraft.world.entity.EntityType.VILLAGER
