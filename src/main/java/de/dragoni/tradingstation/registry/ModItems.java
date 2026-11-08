@@ -21,10 +21,19 @@ public class ModItems {
           props -> new StationUpgradeItem(props, UpgradeRules.ADVANCED),
           props -> props.stacksTo(1));
 
+  public static final DeferredItem<StationUpgradeItem> STATION_UPGRADE_WANDERING =
+      ITEMS.registerItem(
+          "station_upgrade_wandering",
+          props -> new StationUpgradeItem(props, UpgradeRules.WANDERING),
+          props -> props.stacksTo(1));
+
   private ModItems() {}
 
   /** The registered upgrade item of a kind, or null if there is none (yet). */
   public static net.minecraft.world.item.Item upgradeItem(String kind) {
-    return UpgradeRules.ADVANCED.equals(kind) ? STATION_UPGRADE_ADVANCED.get() : null;
+    if (UpgradeRules.ADVANCED.equals(kind)) {
+      return STATION_UPGRADE_ADVANCED.get();
+    }
+    return UpgradeRules.WANDERING.equals(kind) ? STATION_UPGRADE_WANDERING.get() : null;
   }
 }

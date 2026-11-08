@@ -34,6 +34,9 @@ clean alternative to a pile of walking villagers.
 - **Station upgrades.** Easy NPCs need the *Advanced NPC Trading Station Upgrade* in the upgrade slot
   of the station menu (right-click the station with the upgrade to install it). Recipes and the
   requirement per NPC are configurable; see [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
+- **Villagers too.** Standard villagers (every profession, also from other mods) and wandering
+  traders can be kept in a station. A villager needs the job site block of its profession, read
+  from the game data. Villagers need no upgrade, wandering traders the Wandering Trader Upgrade.
 - **Many looks**: futuristic stasis-field station, stone and every wood type. Wood types from
   other mods get their own station automatically.
 - **Safe for scripted NPCs**: destroying the catcher of a captured NPC makes the NPC *die at its

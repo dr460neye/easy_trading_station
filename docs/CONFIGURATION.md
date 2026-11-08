@@ -229,6 +229,23 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
 
 ---
 
+## Villagers and wandering traders
+
+Besides Easy NPCs the catcher holds **standard villagers** (every profession, also those added by
+mods) and **wandering traders**.
+
+- A villager needs the **job site block of its profession** in the station, read from the game
+  data (the same data recipe viewers show). Every block a profession accepts counts, so professions
+  with several workstations work. Villagers without a profession need nothing.
+- Villagers restock when the station is used, at most twice per game day, like at a job site.
+- A wandering trader needs the *Wandering Trader Upgrade* and gets new offers once per game day.
+- **Cloning**: villagers are never cloned while Easy Villagers is installed (the catcher then
+  captures). Without it the normal catcher mode applies. Wandering traders follow the catcher mode.
+- Easy Villagers: the catcher in hand wins over its Shift + right-click pick-up.
+- Per type or name modes work as usual, for example `typeOverrides = ["minecraft:villager=DISABLED"]`.
+
+---
+
 ## Station upgrades
 
 A station has an **upgrade slot** (third slot of the station menu). The installed upgrade decides
@@ -236,8 +253,9 @@ which NPCs the station can hold. Today there is one upgrade:
 
 | Upgrade | Needed for |
 |---------|-----------|
-| none | (standard villagers, once villager support is added) |
+| none | standard villagers (every profession, also from other mods) |
 | Advanced NPC Trading Station Upgrade | Easy NPCs |
+| Wandering Trader Upgrade | wandering traders; their offers are reset once per game day |
 
 An NPC that needs an upgrade can not be put into a station without it; the upgrade can not be taken
 out while such an NPC is inside. Stations that held an Easy NPC before upgrades existed get the
@@ -253,7 +271,7 @@ dropped when the station is broken).
 ```
 
 Without an entry: Easy NPCs and unknown NPCs need `advanced`, `minecraft:villager` needs `none`,
-`minecraft:wandering_trader` needs `wandering` (the last two come with the villager support).
+`minecraft:wandering_trader` needs `wandering`.
 
 ---
 
@@ -267,6 +285,7 @@ Without an entry: Easy NPCs and unknown NPCs need `advanced`, `minecraft:village
 | Trading Station (stone, woods, modded woods) | top row 3 glass, middle row emerald + eye of ender + diamond, bottom row 3 planks / stone (the variant's own block) |
 | Trading Station futuristic | same, with 3 iron ingots in the bottom row |
 | Advanced NPC Trading Station Upgrade | emerald, emerald block, emerald / netherite ingot, redstone block, gold block / 3 mob heads (any item of the tag `minecraft:skulls`) |
+| Wandering Trader Upgrade | diamond, diamond block, diamond / emerald, ender pearl, torch / 3 logs (any item of the tag `minecraft:logs`) |
 
 ```toml
 [recipes]
@@ -280,6 +299,9 @@ Without an entry: Easy NPCs and unknown NPCs need `advanced`, `minecraft:village
   advancedUpgrade = true               # false: no crafting recipe for the Advanced NPC Trading Station Upgrade
   advancedUpgradePattern = ["EBE", "NRG", "HHH"]
   advancedUpgradeKeys = ["E=minecraft:emerald", "B=minecraft:emerald_block", "N=minecraft:netherite_ingot", "R=minecraft:redstone_block", "G=minecraft:gold_block", "H=#minecraft:skulls"]
+  wanderingUpgrade = true              # same three options for the Wandering Trader Upgrade
+  wanderingUpgradePattern = ["DMD", "EPT", "LLL"]
+  wanderingUpgradeKeys = ["D=minecraft:diamond", "M=minecraft:diamond_block", "E=minecraft:emerald", "P=minecraft:ender_pearl", "T=minecraft:torch", "L=#minecraft:logs"]
 ```
 
 Keys are `X=item_id` or `X=#item_tag`. `P` in the station pattern is reserved. A wrong value is

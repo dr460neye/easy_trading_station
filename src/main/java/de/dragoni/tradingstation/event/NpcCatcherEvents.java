@@ -2,6 +2,7 @@ package de.dragoni.tradingstation.event;
 
 import de.dragoni.tradingstation.TradingStationMod;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
+import de.dragoni.tradingstation.station.StationNpc;
 import de.dragoni.tradingstation.station.StationSessions;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.network.chat.Component;
@@ -49,7 +50,7 @@ public class NpcCatcherEvents {
       }
       return;
     }
-    if (!(event.getTarget() instanceof EasyNPC<?>)) {
+    if (!(event.getTarget() instanceof EasyNPC<?>) && !StationNpc.isGenericSupported(event.getTarget())) {
       if (server && event.getTarget() instanceof LivingEntity && event.getEntity() instanceof ServerPlayer p) {
         p.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.unsupported"));
       }

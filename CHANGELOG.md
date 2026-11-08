@@ -13,45 +13,26 @@ release. Put the most important entries first and keep a bullet's first sentence
 
 ## [Unreleased]
 
-### Added
-- **Station upgrades**: a third slot in the station menu. Easy NPCs need the new **Advanced NPC Trading Station Upgrade** (crafted from emeralds, an emerald block, a netherite ingot, a redstone block, a gold block and three mob heads; recipe configurable). The `[upgrades]` section of the server config turns the requirement off or sets it per NPC. Right-click a station with the upgrade in hand to install it straight away (Shift + right-click opens the menu). Stations that already hold an Easy NPC keep working: they get the upgrade automatically (it stays in the station).
-- **Catcher mode per NPC name**: `typeOverrides` entries now match an NPC name as well as an entity
-  type id (`"beastmaster=BOTH"`, `"wayfarer=CAPTURE"`, `"jeweler=CLONE"`). All Easy NPC humanoids
-  share one entity type, so names are the way to treat individual shopkeepers differently.
-
-### Fixed
-- Stations of modded woods use the texture the planks really have (Blood Wood and Lunar showed the pink missing texture because their texture files are named differently).
-- More modded woods get a station automatically: every planks block in another mod's `minecraft:planks` tag is found, not only registered wood types (for example Menril, Rowan, Alder, Hawthorn, Occultism's Otherworld wood).
-- NPCs in claimed or otherwise protected areas can no longer be caught: the catcher asks claim and protection mods first, in the same way as for breaking a block there.
-- Workstations made of two parts (doors, tall plants, beds) are shown completely; they are scaled to stay inside the front cell of the booth.
-
-### Changed
-- Crafting recipes of the catcher and all stations can be changed in `easy_npc_trading_station-common.toml` (pattern, keys, or turned off). The recipes are written when the game loads, no longer shipped as fixed files.
-- Recipes are more expensive. Catcher: 3 string, 2 iron ingots, 1 ender pearl. Stations: 3 glass, emerald, eye of ender, diamond and 3 planks or stone (futuristic: 3 iron ingots).
-- Station menu: the two slots are stacked with their labels to the right, so the texts no longer overlap.
-- When a released NPC can not be spawned, the reason is written to `latest.log`.
-
 ## [1.0.0] - 2026-11-08
 
 First release for Minecraft 26.1.2, NeoForge 26.1.2.126, Easy NPC 7.18.0+.
 
 ### Added
-- **NPC Catcher**: capture or clone Easy NPCs; modes `CAPTURE`, `CLONE`, `BOTH`, `DISABLED`, global and per NPC type.
-- **Trading Station**: 1 × 2 × 2 glass booth with podium, access window and workstation spot.
-  13 styles: futuristic, stone and all 11 vanilla woods; wood types of other mods and extra blocks
-  from a text file get stations automatically.
-- Station menu (Shift + right-click) with a catcher slot and a workstation slot.
-- Per-NPC workstations: `requiredWorkstations` config (match by entity type or name, item ids,
-  wildcards, item tags, label); fallback Crafting Table. Missing workstation: strike sign in the
-  station and a chat hint naming the missing block.
+- **NPC Catcher**: capture or clone Easy NPCs, standard villagers (any profession, also from other mods) and wandering traders. Modes `CAPTURE`, `CLONE`, `BOTH`, `DISABLED`, globally, per NPC type and per NPC name.
+- **Trading Station**: 1 × 2 × 2 glass booth with podium, access window and workstation spot. 13 styles (futuristic, stone, 11 vanilla woods); stations for the woods of other mods appear automatically.
+- **Station menu** (Shift + right-click) with a catcher slot, a workstation slot and an upgrade slot.
+- **Station upgrades**: Easy NPCs need the *Advanced NPC Trading Station Upgrade*, wandering traders the *Wandering Trader Upgrade* (new offers once a day). Standard villagers need none. Recipes and the requirement per NPC are configurable; right-click a station with an upgrade to install it.
+- **Villager workstations from game data**: a villager needs the job site block of its profession (all alternatives count), so modded professions work without any setup. Villagers restock up to twice a day. They are never cloned while Easy Villagers is installed.
+- **Per-NPC workstations** for Easy NPCs: `requiredWorkstations` config (match by entity type or name, item ids, wildcards, item tags, label). Missing workstation: strike sign in the station and a chat hint naming the missing block.
 - Interaction goes through the normal right-click event, so shop scripts (KubeJS) keep working.
-- Destroying the catcher of a captured NPC makes the NPC die at its home position (normal death
-  events). Stations are explosion-proof.
-- English and German translations, crafting recipes for the catcher and all stations.
+- Destroying the catcher of a captured Easy NPC makes the NPC die at its home position (normal death events). Stations are explosion-proof.
+- The catcher respects claims and protection mods (FTB Chunks and others).
+- Crafting recipes of the catcher, the stations and the upgrades are set in `easy_npc_trading_station-common.toml`.
+- English and German translations.
 
 ### Known issues
-- Only Easy NPC entities can be caught.
 - Multiplayer and large servers are not tested yet.
+- Besides Easy NPCs only standard villagers and wandering traders can be caught; the traders of other mods will follow.
 
 [Unreleased]: https://github.com/dr460neye/easy_trading_station/compare/26.1.2-1.0.0...HEAD
 [1.0.0]: https://github.com/dr460neye/easy_trading_station/releases/tag/26.1.2-1.0.0

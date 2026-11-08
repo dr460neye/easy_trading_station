@@ -52,4 +52,75 @@ public final class StationNpc {
       living.yHeadRotO = yaw;
     }
   }
+
+  // ---- NPCs that are not Easy NPCs (standard villagers, wandering traders) ------------------
+
+  /** Keys the station keeps in the stored data next to the entity's own data. */
+  public static final String RESTOCK_KEY = "TradingStationRestock";
+
+  public static final String OFFERS_DAY_KEY = "TradingStationOffersDay";
+
+  /** True for entity types of Easy NPC. */
+  public static boolean isEasyNpc(net.minecraft.world.entity.EntityType<?> type) {
+    return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
+        .getKey(type)
+        .getNamespace()
+        .equals("easy_npc");
+  }
+
+  /** Entities the catcher can hold besides Easy NPCs (more through the allow list, later). */
+  public static boolean isGenericSupported(Entity entity) {
+    var type = entity.getType();
+    return type == net.minecraft.world.entity.EntityType.VILLAGER
+        || type == net.minecraft.world.entity.EntityType.WANDERING_TRADER;
+  }
+
+  public static boolean easyVillagersInstalled() {
+    return net.neoforged.fml.ModList.get().isLoaded("easy_villagers");
+  }
+
+  /** The state of a non-Easy-NPC entity as station data. Identity, brain and despawn timer are left out. */
+  public static net.minecraft.nbt.CompoundTag entityTag(Entity entity) {
+    var output =
+        net.minecraft.world.level.storage.TagValueOutput.createWithContext(
+            ProblemReporter.DISCARDING, entity.level().registryAccess());
+    entity.saveWithoutId(output);
+    net.minecraft.nbt.CompoundTag tag = output.buildResult();
+    tag.remove("UUID");
+    tag.remove("Brain");
+    tag.remove("DespawnDelay");
+    return tag;
+  }
+
+  /** Copies the station's own bookkeeping keys of the old data into the new data. */
+  public static de.markusbordihn.easynpc.data.preset.PresetData carryKeys(
+      de.markusbordihn.easynpc.data.preset.PresetData from,
+      de.markusbordihn.easynpc.data.preset.PresetData to) {
+    if (from == null || to == null) {
+      return to;
+    }
+    net.minecraft.nbt.CompoundTag tag = to.data().copy();
+    for (String key : new String[] {RESTOCK_KEY, OFFERS_DAY_KEY}) {
+      if (from.data().contains(key)) {
+        tag.put(key, from.data().get(key).copy());
+      }
+    }
+    return new de.markusbordihn.easynpc.data.preset.PresetData(to.entityType(), tag);
+  }
+
+  /** Releases a stored non-Easy-NPC entity at the position. */
+  public static boolean spawnGeneric(
+      net.minecraft.server.level.ServerLevel level,
+      de.markusbordihn.easynpc.data.preset.PresetData data,
+      BlockPos pos,
+      float yaw) {
+    Entity entity = create(level, data, EntitySpawnReason.SPAWN_ITEM_USE);
+    if (entity == null) {
+      return false;
+    }
+    entity.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+    entity.setYRot(yaw + 180.0F);
+    entity.setOldPosAndRot();
+    return level.addFreshEntity(entity);
+  }
 }

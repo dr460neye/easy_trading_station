@@ -6,6 +6,7 @@ import de.dragoni.tradingstation.config.TradingStationConfig;
 import de.dragoni.tradingstation.registry.ModDataComponents;
 import de.dragoni.tradingstation.registry.ModItems;
 import de.dragoni.tradingstation.station.NpcOrigin;
+import de.dragoni.tradingstation.station.StationNpc;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.data.preset.PresetDataUtils;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
@@ -49,7 +50,8 @@ public class NpcCatcherItem extends Item {
 
   /** Server side: captures or clones the target into the catcher held in the given hand. */
   public static InteractionResult capture(ServerPlayer player, InteractionHand hand, Entity target) {
-    if (!(target instanceof EasyNPC<?> npc)) {
+    boolean easy = target instanceof EasyNPC<?>;
+    if (!easy && !StationNpc.isGenericSupported(target)) {
       return InteractionResult.PASS;
     }
     if (isProtected(player, target)) {
@@ -57,7 +59,10 @@ public class NpcCatcherItem extends Item {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.no_access"));
       return InteractionResult.FAIL;
     }
-    PresetData data = PresetData.get(PresetDataUtils.toItemStack(npc));
+    PresetData data =
+        easy
+            ? PresetData.get(PresetDataUtils.toItemStack((EasyNPC<?>) target))
+            : new PresetData(target.getType(), StationNpc.entityTag(target));
     String name = data == null ? "" : npcName(data);
     CatcherMode mode = TradingStationConfig.modeFor(target.getType(), name);
     TradingStationMod.LOGGER.info("Capture: type={} name='{}' mode={}", target.getType(), name, mode);
@@ -65,11 +70,13 @@ public class NpcCatcherItem extends Item {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.disabled"));
       return InteractionResult.FAIL;
     }
-    var decision = SecurityManager.checkAccess(player, npc);
-    TradingStationMod.LOGGER.info("Capture access: allowed={} reason={}", decision.allowed(), decision.reason());
-    if (!decision.allowed()) {
-      player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.no_access"));
-      return InteractionResult.FAIL;
+    if (easy) {
+      var decision = SecurityManager.checkAccess(player, (EasyNPC<?>) target);
+      TradingStationMod.LOGGER.info("Capture access: allowed={} reason={}", decision.allowed(), decision.reason());
+      if (!decision.allowed()) {
+        player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.no_access"));
+        return InteractionResult.FAIL;
+      }
     }
     TradingStationMod.LOGGER.info("Capture preset: present={} valid={}", data != null, data != null && data.hasValidData());
     if (data == null || !data.hasValidData()) {
@@ -77,8 +84,14 @@ public class NpcCatcherItem extends Item {
       return InteractionResult.FAIL;
     }
     boolean clone = mode == CatcherMode.CLONE || (mode == CatcherMode.BOTH && player.isShiftKeyDown());
-    if (!clone) {
+    if (clone && target.getType() == net.minecraft.world.entity.EntityType.VILLAGER
+        && StationNpc.easyVillagersInstalled()) {
+      // standard villagers are never cloned while Easy Villagers is installed (it handles them itself)
+      clone = false;
+    }
+    if (!clone && easy) {
       // remember the home so the NPC can "die" there if this catcher is destroyed
+      var npc = (EasyNPC<?>) target;
       BlockPos home =
           npc.getEasyNPCNavigationData().hasNPCHomePosition()
               ? npc.getEasyNPCNavigationData().getNPCHomePosition()
@@ -129,7 +142,11 @@ public class NpcCatcherItem extends Item {
       return InteractionResult.SUCCESS;
     }
     var pos = context.getClickedPos().relative(context.getClickedFace());
-    if (PresetDataUtils.spawnEntity(data, level, pos, player)) {
+    boolean spawned =
+        StationNpc.isEasyNpc(data.entityType())
+            ? PresetDataUtils.spawnEntity(data, level, pos, player)
+            : StationNpc.spawnGeneric((net.minecraft.server.level.ServerLevel) level, data, pos, player.getYRot());
+    if (spawned) {
       consume(player, stack);
       return InteractionResult.CONSUME;
     }

@@ -223,6 +223,10 @@ public class GeneratedStationPack {
     if (upgrade.isPresent()) {
       put("data/" + NS + "/recipe/station_upgrade_advanced.json", upgrade.get());
     }
+    var wandering = TradingStationCommonConfig.wanderingUpgradeRecipe(NS + ":station_upgrade_wandering");
+    if (wandering.isPresent()) {
+      put("data/" + NS + "/recipe/station_upgrade_wandering.json", wandering.get());
+    }
     for (StationVariant variant : ModBlocks.STATIONS.keySet()) {
       if (!variant.builtIn() && !TradingStationCommonConfig.dynamicRecipes()) {
         continue;

@@ -38,6 +38,8 @@ public final class StationSessions {
   private static final int NO_MENU_GRACE = 40;
 
   private static final int MAX_DISTANCE_SQR = 24 * 24;
+  private static final long RESTOCK_INTERVAL = 12000L;
+  private static final long DAY_TICKS = 24000L;
 
   private static final class Session {
     final ServerLevel level;
@@ -104,10 +106,20 @@ public final class StationSessions {
       sendMissingWorkstation(player, station);
       return;
     }
-    Entity entity = StationNpc.create(level, station.getNpc(), EntitySpawnReason.LOAD);
+    PresetData stored = prepareStoredData(level, station);
+    Entity entity = StationNpc.create(level, stored, EntitySpawnReason.LOAD);
     if (entity == null) {
       player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.failed"));
       return;
+    }
+    if (entity instanceof net.minecraft.world.entity.npc.villager.Villager villager
+        && stored.data().getLongOr(StationNpc.RESTOCK_KEY, -1L) == level.getGameTime()) {
+      villager.restock();
+    }
+    if (entity instanceof net.minecraft.world.entity.Mob mob && !(entity instanceof EasyNPC<?>)) {
+      mob.setNoAi(true);
+      mob.setSilent(true);
+      mob.setPersistenceRequired();
     }
     boolean wasInvulnerable = entity.isInvulnerable();
     double originalScale = 1.0;
@@ -161,6 +173,39 @@ public final class StationSessions {
     // No screen is not an error: NPCs may only run a command, whisper or play a sound. The session
     // stays for a short grace period (see tick()) so such actions can finish, then it is closed.
     TradingStationMod.LOGGER.debug("Station interaction handled={}", handled);
+  }
+
+  /**
+   * Standard villagers restock at most twice per day while stored (like at a job site); a wandering
+   * trader in a station with the wandering upgrade gets new offers once per day. The marks are saved
+   * in the stored data and the station is updated before the entity is built from it.
+   */
+  private static PresetData prepareStoredData(ServerLevel level, TradingStationBlockEntity station) {
+    PresetData stored = station.getNpc();
+    if (StationNpc.isEasyNpc(stored.entityType())) {
+      return stored;
+    }
+    long now = level.getGameTime();
+    net.minecraft.nbt.CompoundTag tag = stored.data().copy();
+    boolean changed = false;
+    if (stored.entityType() == net.minecraft.world.entity.EntityType.VILLAGER
+        && now - tag.getLongOr(StationNpc.RESTOCK_KEY, Long.MIN_VALUE / 2) >= RESTOCK_INTERVAL) {
+      tag.putLong(StationNpc.RESTOCK_KEY, now);
+      changed = true;
+    }
+    if (stored.entityType() == net.minecraft.world.entity.EntityType.WANDERING_TRADER
+        && "wandering".equals(station.upgradeKind())
+        && now / DAY_TICKS > tag.getLongOr(StationNpc.OFFERS_DAY_KEY, -1L)) {
+      tag.remove("Offers"); // the trader rolls new offers when it is built without any
+      tag.putLong(StationNpc.OFFERS_DAY_KEY, now / DAY_TICKS);
+      changed = true;
+    }
+    if (!changed) {
+      return stored;
+    }
+    stored = new PresetData(stored.entityType(), tag);
+    station.setNpc(stored);
+    return stored;
   }
 
   public static void sendMissingWorkstation(ServerPlayer player, TradingStationBlockEntity station) {
@@ -254,6 +299,20 @@ public final class StationSessions {
         entity.setInvulnerable(session.wasInvulnerable);
         var tag = npc.getEasyNPCPresetData().serializePresetData();
         updated = NpcOrigin.carryOver(station(session), new PresetData(entity.getType(), tag));
+      } else if (!(entity instanceof EasyNPC<?>) && entity.isAlive()) {
+        if (entity instanceof net.minecraft.world.entity.LivingEntity living
+            && living.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE) != null) {
+          living.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE)
+              .setBaseValue(session.originalScale);
+        }
+        entity.setInvulnerable(session.wasInvulnerable);
+        if (entity instanceof net.minecraft.world.entity.Mob mob) {
+          mob.setNoAi(false);
+          mob.setSilent(false);
+        }
+        updated =
+            StationNpc.carryKeys(
+                station(session), new PresetData(entity.getType(), StationNpc.entityTag(entity)));
       }
     } catch (RuntimeException e) {
       TradingStationMod.LOGGER.error("Could not read back NPC state, keeping previous data", e);

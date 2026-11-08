@@ -92,6 +92,9 @@ public class TradingStationBlockEntity extends BlockEntity {
     if (npc == null) {
       return null;
     }
+    if (!StationNpc.isEasyNpc(npc.entityType())) {
+      return VillagerWorkstations.requirementFor(npc);
+    }
     try {
       return TradingStationConfig.requirementFor(npc.entityType(), NpcCatcherItem.npcName(npc));
     } catch (RuntimeException configNotLoaded) {

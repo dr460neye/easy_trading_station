@@ -26,6 +26,8 @@
   "message.easy_npc_trading_station.upgrade_installed": "Upgrade installed.",
   "message.easy_npc_trading_station.upgrade_present": "This station already has an upgrade. Shift + right-click opens its menu.",
   "message.easy_npc_trading_station.upgrade_mismatch": "This upgrade does not fit the NPC in the station.",
+  "item.easy_npc_trading_station.station_upgrade_wandering": "Wandering Trader Station Upgrade",
+  "item.easy_npc_trading_station.station_upgrade_wandering.tooltip": "Lets a trading station hold a wandering trader. The trader gets new offers once a day.",
   "block.easy_npc_trading_station.station_futuristic": "Futuristic Trading Station",
   "block.easy_npc_trading_station.station_stone": "Stone Trading Station",
   "block.easy_npc_trading_station.station_oak": "Oak Trading Station",

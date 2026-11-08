@@ -22,6 +22,9 @@ public class TradingStationCommonConfig {
   public static final ModConfigSpec.BooleanValue ADVANCED_UPGRADE_RECIPE;
   public static final ModConfigSpec.ConfigValue<List<? extends String>> ADVANCED_UPGRADE_PATTERN;
   public static final ModConfigSpec.ConfigValue<List<? extends String>> ADVANCED_UPGRADE_KEYS;
+  public static final ModConfigSpec.BooleanValue WANDERING_UPGRADE_RECIPE;
+  public static final ModConfigSpec.ConfigValue<List<? extends String>> WANDERING_UPGRADE_PATTERN;
+  public static final ModConfigSpec.ConfigValue<List<? extends String>> WANDERING_UPGRADE_KEYS;
 
   private static final List<String> DEFAULT_CATCHER_PATTERN = List.of(" SS", "IPS", "I  ");
   private static final List<String> DEFAULT_CATCHER_KEYS =
@@ -34,6 +37,15 @@ public class TradingStationCommonConfig {
           "Y=minecraft:ender_eye",
           "D=minecraft:diamond");
   private static final String DEFAULT_FUTURISTIC_BASE = "minecraft:iron_ingot";
+  private static final List<String> DEFAULT_WANDERING_PATTERN = List.of("DMD", "EPT", "LLL");
+  private static final List<String> DEFAULT_WANDERING_KEYS =
+      List.of(
+          "D=minecraft:diamond",
+          "M=minecraft:diamond_block",
+          "E=minecraft:emerald",
+          "P=minecraft:ender_pearl",
+          "T=minecraft:torch",
+          "L=#minecraft:logs");
   private static final List<String> DEFAULT_ADVANCED_PATTERN = List.of("EBE", "NRG", "HHH");
   private static final List<String> DEFAULT_ADVANCED_KEYS =
       List.of(
@@ -105,6 +117,18 @@ public class TradingStationCommonConfig {
             .comment("Keys of the Advanced NPC Trading Station upgrade (heads: the item tag minecraft:skulls).")
             .defineListAllowEmpty(
                 "advancedUpgradeKeys", DEFAULT_ADVANCED_KEYS, () -> "X=minecraft:stick", o -> o instanceof String);
+    WANDERING_UPGRADE_RECIPE =
+        builder.comment("Craftable Wandering Trader upgrade.").define("wanderingUpgrade", true);
+    WANDERING_UPGRADE_PATTERN =
+        builder
+            .comment("Pattern of the Wandering Trader upgrade.")
+            .defineListAllowEmpty(
+                "wanderingUpgradePattern", DEFAULT_WANDERING_PATTERN, () -> "   ", o -> o instanceof String);
+    WANDERING_UPGRADE_KEYS =
+        builder
+            .comment("Keys of the Wandering Trader upgrade (logs: the item tag minecraft:logs).")
+            .defineListAllowEmpty(
+                "wanderingUpgradeKeys", DEFAULT_WANDERING_KEYS, () -> "X=minecraft:stick", o -> o instanceof String);
     builder.pop();
     SPEC = builder.build();
   }
@@ -163,6 +187,21 @@ public class TradingStationCommonConfig {
     } catch (IllegalStateException notLoaded) {
       return Optional.of(
           fallback("advanced upgrade", "equipment", DEFAULT_ADVANCED_PATTERN, DEFAULT_ADVANCED_KEYS, Map.of(), resultId));
+    }
+  }
+
+  /** JSON of the recipe of the wandering trader upgrade; empty if turned off. */
+  public static Optional<String> wanderingUpgradeRecipe(String resultId) {
+    try {
+      if (!WANDERING_UPGRADE_RECIPE.get()) {
+        return Optional.empty();
+      }
+      return Optional.of(
+          ShapedRecipe.json("equipment", WANDERING_UPGRADE_PATTERN.get(), WANDERING_UPGRADE_KEYS.get(), Map.of(), resultId)
+              .orElseGet(() -> fallback("wandering upgrade", "equipment", DEFAULT_WANDERING_PATTERN, DEFAULT_WANDERING_KEYS, Map.of(), resultId)));
+    } catch (IllegalStateException notLoaded) {
+      return Optional.of(
+          fallback("wandering upgrade", "equipment", DEFAULT_WANDERING_PATTERN, DEFAULT_WANDERING_KEYS, Map.of(), resultId));
     }
   }
 

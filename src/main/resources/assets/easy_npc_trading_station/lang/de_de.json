@@ -26,6 +26,8 @@
   "message.easy_npc_trading_station.upgrade_installed": "Upgrade eingebaut.",
   "message.easy_npc_trading_station.upgrade_present": "Diese Station hat schon ein Upgrade. Mit Shift + Rechtsklick öffnest du das Menü.",
   "message.easy_npc_trading_station.upgrade_mismatch": "Dieses Upgrade passt nicht zum NPC in der Station.",
+  "item.easy_npc_trading_station.station_upgrade_wandering": "Upgrade: Wandernder Händler",
+  "item.easy_npc_trading_station.station_upgrade_wandering.tooltip": "Erlaubt einer Handelsstation, einen Wandernden Händler aufzunehmen. Der Händler bekommt einmal am Tag neue Angebote.",
   "block.easy_npc_trading_station.station_futuristic": "Futuristische Handelsstation",
   "block.easy_npc_trading_station.station_stone": "Stein-Handelsstation",
   "block.easy_npc_trading_station.station_oak": "Eichen-Handelsstation",

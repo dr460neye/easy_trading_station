@@ -20,6 +20,8 @@ in your world. Perfect for trading halls and for modpacks with quest or shop NPC
 - **Trading Station**: a 1 × 2 × 2 glass booth with a podium for the NPC, an access window and a
   workstation in front. Shift + right-click opens a menu with a slot for the catcher, one for the
   workstation and one for a station upgrade.
+- **Villagers too**: standard villagers (every profession, also from other mods) and wandering
+  traders fit into a station. A villager needs the job site block of its profession.
 - **Station upgrades**: Easy NPCs need the Advanced NPC Trading Station Upgrade (right-click the
   station with it). Recipes and the requirement per NPC are configurable.
 - **Everything of the NPC keeps working**: trades, dialogs, actions, click handlers of other mods
