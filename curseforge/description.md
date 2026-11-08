@@ -18,8 +18,10 @@ in your world. Perfect for trading halls and for modpacks with quest or shop NPC
 
 - **NPC Catcher**: capture or clone an Easy NPC. The mode is configurable globally and per NPC type.
 - **Trading Station**: a 1 × 2 × 2 glass booth with a podium for the NPC, an access window and a
-  workstation in front. Shift + right-click opens a menu with a slot for the catcher and a slot for
-  the workstation.
+  workstation in front. Shift + right-click opens a menu with a slot for the catcher, one for the
+  workstation and one for a station upgrade.
+- **Station upgrades**: Easy NPCs need the Advanced NPC Trading Station Upgrade (right-click the
+  station with it). Recipes and the requirement per NPC are configurable.
 - **Everything of the NPC keeps working**: trades, dialogs, actions, click handlers of other mods
   (for example KubeJS shops).
 - **Almost no cost**: the station only stores data. The NPC exists in the world only while somebody

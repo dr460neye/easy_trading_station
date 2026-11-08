@@ -31,6 +31,9 @@ clean alternative to a pile of walking villagers.
 - **Workstations per NPC.** Each NPC needs its workstation in the station, configurable per NPC
   type or name (*the Wayfarer needs a Waystone, the Beastmaster a Bestiary Lectern*). Without it
   the NPC puts up a strike sign and nothing of its logic runs.
+- **Station upgrades.** Easy NPCs need the *Advanced NPC Trading Station Upgrade* in the upgrade slot
+  of the station menu (right-click the station with the upgrade to install it). Recipes and the
+  requirement per NPC are configurable; see [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
 - **Many looks**: futuristic stasis-field station, stone and every wood type. Wood types from
   other mods get their own station automatically.
 - **Safe for scripted NPCs**: destroying the catcher of a captured NPC makes the NPC *die at its
@@ -46,7 +49,7 @@ clean alternative to a pile of walking villagers.
 | Right-click a block with the filled catcher | Release the NPC; the catcher is used up |
 | Craft and place a **Trading Station** | 1 × 2 × 2 glass booth, faces you |
 | Right-click the station with the filled catcher | Put the NPC in (catcher is used up) |
-| **Shift + right-click** the station | Menu with a catcher slot and a workstation slot |
+| **Shift + right-click** the station | Menu with a catcher slot, a workstation slot and an upgrade slot |
 | Right-click the station | Talk/trade with the NPC (needs its workstation) |
 
 In the station menu you can store the NPC and the workstation in any order, so an NPC can be
