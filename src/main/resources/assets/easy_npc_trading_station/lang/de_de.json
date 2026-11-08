@@ -28,6 +28,11 @@
   "message.easy_npc_trading_station.upgrade_mismatch": "Dieses Upgrade passt nicht zum NPC in der Station.",
   "item.easy_npc_trading_station.station_upgrade_wandering": "Upgrade: Wandernder Händler",
   "item.easy_npc_trading_station.station_upgrade_wandering.tooltip": "Erlaubt einer Handelsstation, einen Wandernden Händler aufzunehmen. Der Händler bekommt einmal am Tag neue Angebote.",
+  "sign.easy_npc_trading_station.idle.title": "ARBEITSLOS!",
+  "sign.easy_npc_trading_station.idle.unemployed": "Ohne Beruf gibt es nichts zu handeln. Erst einen Beruf besorgen.",
+  "sign.easy_npc_trading_station.idle.nitwit": "Dorftrottel im Dienst: nichts zu verkaufen, nur wegen der Aussicht hier.",
+  "message.easy_npc_trading_station.idle_unemployed": "Dieser Villager hat keinen Beruf und nichts zu handeln.",
+  "message.easy_npc_trading_station.idle_nitwit": "Dorftrottel handeln nicht.",
   "block.easy_npc_trading_station.station_futuristic": "Futuristische Handelsstation",
   "block.easy_npc_trading_station.station_stone": "Stein-Handelsstation",
   "block.easy_npc_trading_station.station_oak": "Eichen-Handelsstation",
@@ -40,10 +45,5 @@
   "block.easy_npc_trading_station.station_cherry": "Kirsch-Handelsstation",
   "block.easy_npc_trading_station.station_bamboo": "Bambus-Handelsstation",
   "block.easy_npc_trading_station.station_crimson": "Karmesin-Handelsstation",
-  "block.easy_npc_trading_station.station_warped": "Wirrholz-Handelsstation",
-  "sign.easy_npc_trading_station.idle.title": "ARBEITSLOS!",
-  "sign.easy_npc_trading_station.idle.unemployed": "Ohne Beruf gibt es nichts zu handeln. Erst einen Beruf besorgen.",
-  "sign.easy_npc_trading_station.idle.nitwit": "Dorftrottel im Dienst: nichts zu verkaufen, nur wegen der Aussicht hier.",
-  "message.easy_npc_trading_station.idle_unemployed": "Dieser Villager hat keinen Beruf und nichts zu handeln.",
-  "message.easy_npc_trading_station.idle_nitwit": "Dorftrottel handeln nicht."
+  "block.easy_npc_trading_station.station_warped": "Wirrholz-Handelsstation"
 }

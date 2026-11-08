@@ -8,9 +8,9 @@ version="${mod_version}"
 displayName="${mod_name}"
 authors="dr460neye"
 description='''
-Catch Easy NPCs with the NPC Catcher and keep them in a glass Trading Station.
+Catch villagers, wandering traders and (with Easy NPC installed) Easy NPCs with the NPC Catcher and keep them in a glass Trading Station.
 The NPC keeps its trades, dialogs and scripts, but stands still and costs no server performance.
-Each NPC needs its workstation in the station (configurable per NPC).
+Workstations, station upgrades and recipes are configurable. Easy NPC and Easy Villagers are optional.
 '''
 
 [[dependencies.${mod_id}]]

@@ -28,6 +28,11 @@
   "message.easy_npc_trading_station.upgrade_mismatch": "This upgrade does not fit the NPC in the station.",
   "item.easy_npc_trading_station.station_upgrade_wandering": "Wandering Trader Station Upgrade",
   "item.easy_npc_trading_station.station_upgrade_wandering.tooltip": "Lets a trading station hold a wandering trader. The trader gets new offers once a day.",
+  "sign.easy_npc_trading_station.idle.title": "NO JOB!",
+  "sign.easy_npc_trading_station.idle.unemployed": "Unemployed and nothing to trade. Give me a profession first.",
+  "sign.easy_npc_trading_station.idle.nitwit": "Nitwit on the clock: nothing to sell, just here for the view.",
+  "message.easy_npc_trading_station.idle_unemployed": "This villager has no profession and nothing to trade.",
+  "message.easy_npc_trading_station.idle_nitwit": "Nitwits do not trade.",
   "block.easy_npc_trading_station.station_futuristic": "Futuristic Trading Station",
   "block.easy_npc_trading_station.station_stone": "Stone Trading Station",
   "block.easy_npc_trading_station.station_oak": "Oak Trading Station",
@@ -40,10 +45,5 @@
   "block.easy_npc_trading_station.station_cherry": "Cherry Trading Station",
   "block.easy_npc_trading_station.station_bamboo": "Bamboo Trading Station",
   "block.easy_npc_trading_station.station_crimson": "Crimson Trading Station",
-  "block.easy_npc_trading_station.station_warped": "Warped Trading Station",
-  "sign.easy_npc_trading_station.idle.title": "NO JOB!",
-  "sign.easy_npc_trading_station.idle.unemployed": "Unemployed and nothing to trade. Give me a profession first.",
-  "sign.easy_npc_trading_station.idle.nitwit": "Nitwit on the clock: nothing to sell, just here for the view.",
-  "message.easy_npc_trading_station.idle_unemployed": "This villager has no profession and nothing to trade.",
-  "message.easy_npc_trading_station.idle_nitwit": "Nitwits do not trade."
+  "block.easy_npc_trading_station.station_warped": "Warped Trading Station"
 }

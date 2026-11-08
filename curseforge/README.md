@@ -15,7 +15,7 @@ folder is part of the mod jar.
 Normally the **release pipeline** uploads the file (see [`../docs/RELEASING.md`](../docs/RELEASING.md)):
 push a tag `<minecraft version>-<mod version>` and GitHub Actions builds, creates the GitHub
 release and uploads to CurseForge with the right game version, loader, Java version, release type,
-changelog and the required dependency *Easy NPC*.
+changelog and the optional dependencies *Easy NPC* and *Easy Villagers*.
 
 One-time work on CurseForge:
 1. Create the project with the data from `project-info.md` and the text from `description.md`.
@@ -24,7 +24,7 @@ One-time work on CurseForge:
 3. Add screenshots (cover image, then station variants, menu, strike sign, config example).
 
 Manual upload (if you ever need it): take the jar from `build/libs/`, game version **26.1.2**,
-loader **NeoForge**, Java **25**, required dependency Easy NPC, changelog from `../CHANGELOG.md`.
+loader **NeoForge**, Java **25**, optional dependencies Easy NPC and Easy Villagers, changelog from `../CHANGELOG.md`.
 
 ## File naming
 
