@@ -63,7 +63,7 @@ jobs:
           distribution: temurin
           java-version: ${{ steps.meta.outputs.java }}
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Generated assets are up to date
         run: |
