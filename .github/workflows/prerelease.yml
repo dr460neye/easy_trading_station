@@ -36,7 +36,7 @@ jobs:
       version: ${{ steps.v.outputs.version }}
       skip: ${{ steps.v.outputs.skip }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Pre-release version
         id: v
