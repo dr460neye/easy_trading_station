@@ -8,7 +8,7 @@ folder is part of the mod jar.
 | [`project-info.md`](project-info.md) | Fields of the CurseForge project form: name, slug, summary, categories, tags, links, dependencies. |
 | [`description.md`](description.md) | The long project description (copy into the *Description* editor; Markdown, switch the editor to Markdown or paste as rich text). |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | The changelog (one section per version); the release pipeline uploads the matching section with each file. |
-| [`images/`](images) | Images for the gallery. Currently the technical sketches; replace with in-game screenshots (see list in `project-info.md`). |
+| [`images/`](images) | Images for the gallery and the description: in-game screenshots (`title-screen.png`, `all_trading_station.png`) and two technical sketches. The list of images that are still missing is in `project-info.md`. |
 
 ## Publishing
 

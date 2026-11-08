@@ -21,7 +21,7 @@ Values for the project form. Items marked **TODO** need a decision or an in-game
 
 ## Summary (max. 250 characters)
 
-> Catch Easy NPCs with the NPC Catcher and keep them in a glass Trading Station. Shops, dialogs and scripts keep working, the NPC costs no performance. Each NPC needs its own workstation, fully configurable for modpacks.
+> Catch Easy NPCs, villagers and wandering traders with the NPC Catcher and keep them in a glass Trading Station. Shops, dialogs and scripts keep working at almost no performance cost. Workstations, upgrades and recipes are configurable.
 
 ## Categories (suggestion)
 
@@ -32,7 +32,7 @@ Values for the project form. Items marked **TODO** need a decision or an in-game
 
 ## Tags (if the site asks)
 
-easy npc, npc, trading, villager, shop, station, workstation, modpack, kubejs friendly, neoforge
+easy npc, npc, trading, villager, wandering trader, shop, station, workstation, upgrade, modpack, kubejs friendly, neoforge
 
 ## Dependencies
 
@@ -42,16 +42,21 @@ easy npc, npc, trading, villager, shop, station, workstation, modpack, kubejs fr
 
 ## Images
 
-| File | Content |
-|------|---------|
-| `images/station-futuristic.png` | Technical sketch, futuristic station (placeholder) |
-| `images/station-medieval.png` | Technical sketch, medieval station (placeholder) |
-| **TODO** `images/cover.png` | Cover: station with an NPC, glass glow, workstation in front |
-| **TODO** `images/catcher.png` | NPC Catcher item, filled and empty |
-| **TODO** `images/menu.png` | Station menu with catcher and workstation slot |
-| **TODO** `images/strike-sign.png` | Strike sign when the workstation is missing |
-| **TODO** `images/variants.png` | All variants side by side |
-| **TODO** `images/config.png` | `requiredWorkstations` config example |
+| File | Content | Used in the description |
+|------|---------|-------------------------|
+| `images/title-screen.png` | Stations with a Wayfarer, a Jeweler and a strike sign | yes (top) |
+| `images/all_trading_station.png` | All stations of FTB Evolution 2: stone, futuristic, every wood | yes (styles) |
+| `images/station-futuristic.png` | Technical sketch, futuristic station (placeholder) | no |
+| `images/station-medieval.png` | Technical sketch, medieval station (placeholder) | no |
+| **TODO** `images/menu.png` | Station menu with catcher, workstation and upgrade slot | |
+| **TODO** `images/villager.png` | A villager in a station with the name plate | |
+| **TODO** `images/config.png` | `requiredWorkstations` config example | |
+
+The description loads its two pictures from the `main` branch on GitHub
+(`raw.githubusercontent.com/dr460neye/easy_trading_station/main/curseforge/images/...`), so they
+show up once the repository has them. For the CurseForge gallery upload the files by hand.
+`title-screen.png` shows the world position at the top right of the screen; crop it out before
+publishing if you do not want that.
 
 ## Links to put in the description
 
