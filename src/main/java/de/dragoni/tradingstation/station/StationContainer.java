@@ -1,6 +1,9 @@
 package de.dragoni.tradingstation.station;
 
+import de.dragoni.tradingstation.config.TradingStationConfig;
+import de.dragoni.tradingstation.config.UpgradeRules;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
+import de.dragoni.tradingstation.item.StationUpgradeItem;
 import de.dragoni.tradingstation.registry.ModDataComponents;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import net.minecraft.world.Container;
@@ -9,14 +12,16 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Menu view of a station: slot 0 = NPC (a filled NPC Catcher), slot 1 = workstation block. The
+ * Menu view of a station: slot 0 = NPC (a filled NPC Catcher), slot 1 = workstation block, slot 2 =
+ * upgrade. The
  * block entity stays the single source of truth; nothing else is stored.
  */
 public class StationContainer implements Container {
 
-  public static final int SIZE = 2;
+  public static final int SIZE = 3;
   public static final int NPC_SLOT = 0;
   public static final int WORKSTATION_SLOT = 1;
+  public static final int UPGRADE_SLOT = 2;
 
   private final TradingStationBlockEntity station;
   private ItemStack npcStack = ItemStack.EMPTY;
@@ -41,7 +46,7 @@ public class StationContainer implements Container {
 
   @Override
   public boolean isEmpty() {
-    return !station.hasNpc() && station.getWorkstation().isEmpty();
+    return !station.hasNpc() && station.getWorkstation().isEmpty() && station.getUpgrade().isEmpty();
   }
 
   @Override
@@ -49,6 +54,7 @@ public class StationContainer implements Container {
     return switch (slot) {
       case NPC_SLOT -> station.hasNpc() ? npcStack : ItemStack.EMPTY;
       case WORKSTATION_SLOT -> station.getWorkstation();
+      case UPGRADE_SLOT -> station.getUpgrade();
       default -> ItemStack.EMPTY;
     };
   }
@@ -68,6 +74,9 @@ public class StationContainer implements Container {
     if (slot == WORKSTATION_SLOT && !station.getWorkstation().isEmpty()) {
       return station.takeWorkstation();
     }
+    if (slot == UPGRADE_SLOT && !station.getUpgrade().isEmpty()) {
+      return station.takeUpgrade();
+    }
     return ItemStack.EMPTY;
   }
 
@@ -79,6 +88,8 @@ public class StationContainer implements Container {
       refreshNpcStack();
     } else if (slot == WORKSTATION_SLOT) {
       station.setWorkstation(stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1));
+    } else if (slot == UPGRADE_SLOT) {
+      station.setUpgrade(stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1));
     }
   }
 
@@ -102,7 +113,23 @@ public class StationContainer implements Container {
       return stack.getItem() instanceof BlockItem item
           && !(item.getBlock() instanceof TradingStationBlock);
     }
+    if (slot == UPGRADE_SLOT) {
+      return stack.getItem() instanceof StationUpgradeItem;
+    }
     return false;
+  }
+
+  /** Upgrade kind the NPC in this catcher needs ("" = none). Same result on client and server. */
+  public static String requiredUpgrade(ItemStack catcher) {
+    PresetData data = catcher.isEmpty() ? null : NpcCatcherItem.getNpc(catcher);
+    return data == null
+        ? UpgradeRules.NONE
+        : TradingStationConfig.requiredUpgrade(data.entityType(), NpcCatcherItem.npcName(data));
+  }
+
+  /** True if the installed upgrade lets the station host the NPC in this catcher. */
+  public static boolean upgradeAllows(ItemStack upgrade, ItemStack catcher) {
+    return UpgradeRules.satisfied(requiredUpgrade(catcher), StationUpgradeItem.kindOf(upgrade));
   }
 
   @Override

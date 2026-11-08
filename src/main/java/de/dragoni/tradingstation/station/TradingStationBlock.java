@@ -194,6 +194,13 @@ public class TradingStationBlock extends Block implements EntityBlock {
         message(player, "occupied");
         return InteractionResult.FAIL;
       }
+      String needed = StationContainer.requiredUpgrade(stack);
+      if (!de.dragoni.tradingstation.config.UpgradeRules.satisfied(needed, station.upgradeKind())) {
+        if (player instanceof ServerPlayer sp) {
+          StationMenu.needsUpgrade(sp, needed);
+        }
+        return InteractionResult.FAIL;
+      }
       station.setNpc(carried);
       NpcCatcherItem.consume(player, stack);
       if (!station.isNpcActive() && player instanceof ServerPlayer sp) {

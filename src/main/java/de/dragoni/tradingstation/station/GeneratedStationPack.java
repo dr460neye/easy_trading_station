@@ -219,6 +219,10 @@ public class GeneratedStationPack {
     if (catcher.isPresent()) {
       put("data/" + NS + "/recipe/npc_catcher.json", catcher.get());
     }
+    var upgrade = TradingStationCommonConfig.advancedUpgradeRecipe(NS + ":station_upgrade_advanced");
+    if (upgrade.isPresent()) {
+      put("data/" + NS + "/recipe/station_upgrade_advanced.json", upgrade.get());
+    }
     for (StationVariant variant : ModBlocks.STATIONS.keySet()) {
       if (!variant.builtIn() && !TradingStationCommonConfig.dynamicRecipes()) {
         continue;

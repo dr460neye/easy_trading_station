@@ -229,6 +229,34 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
 
 ---
 
+## Station upgrades
+
+A station has an **upgrade slot** (third slot of the station menu). The installed upgrade decides
+which NPCs the station can hold. Today there is one upgrade:
+
+| Upgrade | Needed for |
+|---------|-----------|
+| none | (standard villagers, once villager support is added) |
+| Advanced NPC Trading Station Upgrade | Easy NPCs |
+
+An NPC that needs an upgrade can not be put into a station without it; the upgrade can not be taken
+out while such an NPC is inside. Stations that held an Easy NPC before upgrades existed get the
+upgrade automatically (marked as "came with the station", it stays in the station and is not
+dropped when the station is broken).
+
+```toml
+# easy_npc_trading_station-server.toml
+[upgrades]
+  required = true     # false: every station takes every NPC (behaviour of 1.0.0)
+  # "match=upgrade": match = entity type id or part of the NPC name, upgrade = advanced / wandering / none
+  npcUpgrades = ["wayfarer=none"]
+```
+
+Without an entry: Easy NPCs and unknown NPCs need `advanced`, `minecraft:villager` needs `none`,
+`minecraft:wandering_trader` needs `wandering` (the last two come with the villager support).
+
+---
+
 ## Recipes for modpack makers
 
 **Crafting recipes** are set in `easy_npc_trading_station-common.toml` (restart needed). The defaults:
@@ -238,6 +266,7 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
 | NPC Catcher | 3 string, 2 iron ingots, 1 ender pearl |
 | Trading Station (stone, woods, modded woods) | top row 3 glass, middle row emerald + eye of ender + diamond, bottom row 3 planks / stone (the variant's own block) |
 | Trading Station futuristic | same, with 3 iron ingots in the bottom row |
+| Advanced NPC Trading Station Upgrade | emerald, emerald block, emerald / netherite ingot, redstone block, gold block / 3 mob heads (any item of the tag `minecraft:skulls`) |
 
 ```toml
 [recipes]
@@ -248,6 +277,9 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
   stationPattern = ["GGG", "EYD", "PPP"]   # P = the variant's own block (planks, stone, ...)
   stationKeys = ["G=minecraft:glass", "E=minecraft:emerald", "Y=minecraft:ender_eye", "D=minecraft:diamond"]
   futuristicBase = "minecraft:iron_ingot"  # what P is for the futuristic station
+  advancedUpgrade = true               # false: no crafting recipe for the Advanced NPC Trading Station Upgrade
+  advancedUpgradePattern = ["EBE", "NRG", "HHH"]
+  advancedUpgradeKeys = ["E=minecraft:emerald", "B=minecraft:emerald_block", "N=minecraft:netherite_ingot", "R=minecraft:redstone_block", "G=minecraft:gold_block", "H=#minecraft:skulls"]
 ```
 
 Keys are `X=item_id` or `X=#item_tag`. `P` in the station pattern is reserved. A wrong value is

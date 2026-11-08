@@ -34,6 +34,7 @@ public class TradingStationMod {
   private static void addCreativeTabItems(BuildCreativeModeTabContentsEvent event) {
     if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
       event.accept(ModItems.NPC_CATCHER);
+      event.accept(ModItems.STATION_UPGRADE_ADVANCED);
     }
     if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
       ModBlocks.STATION_ITEMS.values().forEach(event::accept);

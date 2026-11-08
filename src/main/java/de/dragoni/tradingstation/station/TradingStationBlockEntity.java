@@ -2,7 +2,11 @@ package de.dragoni.tradingstation.station;
 
 import de.dragoni.tradingstation.config.TradingStationConfig;
 import de.dragoni.tradingstation.config.WorkstationRequirement;
+import de.dragoni.tradingstation.config.UpgradeRules;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
+import de.dragoni.tradingstation.item.StationUpgradeItem;
+import de.dragoni.tradingstation.registry.ModDataComponents;
+import de.dragoni.tradingstation.registry.ModItems;
 import de.dragoni.tradingstation.registry.ModBlocks;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import net.minecraft.core.BlockPos;
@@ -26,8 +30,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 /** Lives on the BACK_LOW cell. Stores only data; nothing here ticks. */
 public class TradingStationBlockEntity extends BlockEntity {
 
+  private static final int DATA_VERSION = 1;
+
   private PresetData npc;
   private ItemStack workstation = ItemStack.EMPTY;
+  private ItemStack upgrade = ItemStack.EMPTY;
   private Identifier displayWorkstation;
   private boolean inUse;
   private net.minecraft.network.chat.Component missingLabel;
@@ -52,6 +59,27 @@ public class TradingStationBlockEntity extends BlockEntity {
 
   public ItemStack getWorkstation() {
     return workstation;
+  }
+
+  public ItemStack getUpgrade() {
+    return upgrade;
+  }
+
+  /** Kind of the installed upgrade, "" if there is none. */
+  public String upgradeKind() {
+    return StationUpgradeItem.kindOf(upgrade);
+  }
+
+  public void setUpgrade(ItemStack stack) {
+    this.upgrade = stack;
+    changed();
+  }
+
+  public ItemStack takeUpgrade() {
+    ItemStack stack = upgrade;
+    upgrade = ItemStack.EMPTY;
+    changed();
+    return stack;
   }
 
   /** True while a transient NPC entity stands in the station; the renderer then hides its copy. */
@@ -124,6 +152,26 @@ public class TradingStationBlockEntity extends BlockEntity {
     return stack;
   }
 
+  /**
+   * Stations saved before upgrades existed keep their NPC: if it needs an upgrade, the station gets
+   * that upgrade as a legacy upgrade (shown in the slot, can not be taken out, not dropped).
+   */
+  private void migrateToUpgrades() {
+    if (npc == null || !upgrade.isEmpty()) {
+      return;
+    }
+    String needed =
+        UpgradeRules.required(
+            java.util.List.of(),
+            BuiltInRegistries.ENTITY_TYPE.getKey(npc.entityType()).toString(),
+            NpcCatcherItem.npcName(npc));
+    var item = ModItems.upgradeItem(needed);
+    if (item != null) {
+      upgrade = new ItemStack(item);
+      upgrade.set(ModDataComponents.LEGACY_UPGRADE.get(), true);
+    }
+  }
+
   private void changed() {
     setChanged();
     if (level != null && !level.isClientSide()) {
@@ -158,6 +206,10 @@ public class TradingStationBlockEntity extends BlockEntity {
     if (!workstation.isEmpty()) {
       output.store("Workstation", ItemStack.CODEC, workstation);
     }
+    if (!upgrade.isEmpty()) {
+      output.store("Upgrade", ItemStack.CODEC, upgrade);
+    }
+    output.putInt("StationVersion", DATA_VERSION);
     if (level != null && !level.isClientSide()) {
       Identifier display = effectiveWorkstation();
       if (display != null) {
@@ -175,6 +227,10 @@ public class TradingStationBlockEntity extends BlockEntity {
     super.loadAdditional(input);
     npc = input.read("Npc", PresetData.CODEC).orElse(null);
     workstation = input.read("Workstation", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+    upgrade = input.read("Upgrade", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+    if (input.getIntOr("StationVersion", 0) < DATA_VERSION) {
+      migrateToUpgrades();
+    }
     displayWorkstation = input.getString("DisplayWorkstation").map(Identifier::tryParse).orElse(null);
     inUse = input.getBooleanOr("InUse", false);
     missingLabel = input.read("MissingLabel", net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(null);
@@ -209,6 +265,12 @@ public class TradingStationBlockEntity extends BlockEntity {
     if (!workstation.isEmpty()) {
       Block.popResource(level, pos, workstation);
       workstation = ItemStack.EMPTY;
+    }
+    if (!upgrade.isEmpty()) {
+      if (!StationUpgradeItem.isLegacy(upgrade)) {
+        Block.popResource(level, pos, upgrade);
+      }
+      upgrade = ItemStack.EMPTY;
     }
   }
 }

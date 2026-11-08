@@ -16,6 +16,8 @@ public class TradingStationConfig {
   private static final ModConfigSpec.ConfigValue<List<? extends String>> WORKSTATION_DEFAULTS;
   private static final ModConfigSpec.ConfigValue<List<? extends String>> WORKSTATION_BY_NAME;
   private static final ModConfigSpec.ConfigValue<List<? extends String>> REQUIRED_WORKSTATIONS;
+  private static final ModConfigSpec.BooleanValue UPGRADES_REQUIRED;
+  private static final ModConfigSpec.ConfigValue<List<? extends String>> NPC_UPGRADES;
 
   static {
     ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -83,6 +85,25 @@ public class TradingStationConfig {
                 () -> "wayfarer=waystones:*waystone;Waystone",
                 o -> o instanceof String);
     builder.pop();
+    builder.push("upgrades");
+    UPGRADES_REQUIRED =
+        builder
+            .comment(
+                "Stations need an upgrade in the upgrade slot for NPCs that require one.",
+                "false: every station takes every NPC (behaviour of version 1.0.0 without upgrades).")
+            .define("required", true);
+    NPC_UPGRADES =
+        builder
+            .comment(
+                "Upgrade an NPC needs, in the format 'match=upgrade'. match is an entity type id",
+                "(contains ':') or part of the NPC name (case-insensitive); the first entry that fits wins.",
+                "upgrade is 'advanced' (Advanced NPC Trading Station upgrade), 'wandering' or 'none'.",
+                "Without an entry: Easy NPCs and unknown NPCs need 'advanced', minecraft:villager needs",
+                "'none', minecraft:wandering_trader needs 'wandering'.",
+                "Example: [\"wayfarer=none\", \"easy_npc:villager=none\"]")
+            .defineListAllowEmpty(
+                "npcUpgrades", List.of(), () -> "wayfarer=none", o -> o instanceof String);
+    builder.pop();
     SPEC = builder.build();
   }
 
@@ -91,6 +112,19 @@ public class TradingStationConfig {
   public static CatcherMode modeFor(EntityType<?> type, String npcName) {
     String id = BuiltInRegistries.ENTITY_TYPE.getKey(type).toString();
     return ConfigEntries.modeFor(TYPE_OVERRIDES.get(), id, npcName, DEFAULT_MODE.get());
+  }
+
+  /** The upgrade kind this NPC needs ("" = none). Falls back to the defaults if the config is not loaded. */
+  public static String requiredUpgrade(EntityType<?> type, String npcName) {
+    String typeId = type == null ? null : BuiltInRegistries.ENTITY_TYPE.getKey(type).toString();
+    try {
+      if (!UPGRADES_REQUIRED.get()) {
+        return UpgradeRules.NONE;
+      }
+      return UpgradeRules.required(NPC_UPGRADES.get(), typeId, npcName);
+    } catch (IllegalStateException notLoaded) {
+      return UpgradeRules.required(List.of(), typeId, npcName);
+    }
   }
 
   /** The workstation this NPC needs: a specific entry, else the default block. Server side only. */

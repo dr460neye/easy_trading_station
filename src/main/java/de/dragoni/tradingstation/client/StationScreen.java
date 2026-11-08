@@ -41,5 +41,7 @@ public class StationScreen extends AbstractContainerScreen<StationMenu> {
     int labelX = x + StationMenu.SLOT_X + 16 + 6;
     graphics.text(font, npc, labelX, y + StationMenu.NPC_Y + 4, 0xFF404040, false);
     graphics.text(font, workstation, labelX, y + StationMenu.WORKSTATION_Y + 4, 0xFF404040, false);
+    Component upgrade = Component.translatable("container.easy_npc_trading_station.upgrade");
+    graphics.text(font, upgrade, labelX, y + StationMenu.UPGRADE_Y + 4, 0xFF404040, false);
   }
 }

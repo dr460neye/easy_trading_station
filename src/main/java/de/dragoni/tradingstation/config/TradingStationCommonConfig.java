@@ -19,6 +19,9 @@ public class TradingStationCommonConfig {
   public static final ModConfigSpec.ConfigValue<List<? extends String>> STATION_PATTERN;
   public static final ModConfigSpec.ConfigValue<List<? extends String>> STATION_KEYS;
   public static final ModConfigSpec.ConfigValue<String> FUTURISTIC_BASE;
+  public static final ModConfigSpec.BooleanValue ADVANCED_UPGRADE_RECIPE;
+  public static final ModConfigSpec.ConfigValue<List<? extends String>> ADVANCED_UPGRADE_PATTERN;
+  public static final ModConfigSpec.ConfigValue<List<? extends String>> ADVANCED_UPGRADE_KEYS;
 
   private static final List<String> DEFAULT_CATCHER_PATTERN = List.of(" SS", "IPS", "I  ");
   private static final List<String> DEFAULT_CATCHER_KEYS =
@@ -31,6 +34,15 @@ public class TradingStationCommonConfig {
           "Y=minecraft:ender_eye",
           "D=minecraft:diamond");
   private static final String DEFAULT_FUTURISTIC_BASE = "minecraft:iron_ingot";
+  private static final List<String> DEFAULT_ADVANCED_PATTERN = List.of("EBE", "NRG", "HHH");
+  private static final List<String> DEFAULT_ADVANCED_KEYS =
+      List.of(
+          "E=minecraft:emerald",
+          "B=minecraft:emerald_block",
+          "N=minecraft:netherite_ingot",
+          "R=minecraft:redstone_block",
+          "G=minecraft:gold_block",
+          "H=#minecraft:skulls");
 
   static {
     ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -81,6 +93,18 @@ public class TradingStationCommonConfig {
         builder
             .comment("Block used for P in the futuristic station.")
             .define("futuristicBase", DEFAULT_FUTURISTIC_BASE);
+    ADVANCED_UPGRADE_RECIPE =
+        builder.comment("Craftable Advanced NPC Trading Station upgrade.").define("advancedUpgrade", true);
+    ADVANCED_UPGRADE_PATTERN =
+        builder
+            .comment("Pattern of the Advanced NPC Trading Station upgrade.")
+            .defineListAllowEmpty(
+                "advancedUpgradePattern", DEFAULT_ADVANCED_PATTERN, () -> "   ", o -> o instanceof String);
+    ADVANCED_UPGRADE_KEYS =
+        builder
+            .comment("Keys of the Advanced NPC Trading Station upgrade (heads: the item tag minecraft:skulls).")
+            .defineListAllowEmpty(
+                "advancedUpgradeKeys", DEFAULT_ADVANCED_KEYS, () -> "X=minecraft:stick", o -> o instanceof String);
     builder.pop();
     SPEC = builder.build();
   }
@@ -124,6 +148,21 @@ public class TradingStationCommonConfig {
       Map<Character, String> fixed = Map.of('P', futuristic ? DEFAULT_FUTURISTIC_BASE : base);
       return Optional.of(
           fallback("station", "building", DEFAULT_STATION_PATTERN, DEFAULT_STATION_KEYS, fixed, resultId));
+    }
+  }
+
+  /** JSON of the recipe of the advanced upgrade; empty if turned off. */
+  public static Optional<String> advancedUpgradeRecipe(String resultId) {
+    try {
+      if (!ADVANCED_UPGRADE_RECIPE.get()) {
+        return Optional.empty();
+      }
+      return Optional.of(
+          ShapedRecipe.json("equipment", ADVANCED_UPGRADE_PATTERN.get(), ADVANCED_UPGRADE_KEYS.get(), Map.of(), resultId)
+              .orElseGet(() -> fallback("advanced upgrade", "equipment", DEFAULT_ADVANCED_PATTERN, DEFAULT_ADVANCED_KEYS, Map.of(), resultId)));
+    } catch (IllegalStateException notLoaded) {
+      return Optional.of(
+          fallback("advanced upgrade", "equipment", DEFAULT_ADVANCED_PATTERN, DEFAULT_ADVANCED_KEYS, Map.of(), resultId));
     }
   }
 

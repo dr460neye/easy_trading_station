@@ -17,5 +17,14 @@ public class ModDataComponents {
           "captured_npc",
           builder -> builder.persistent(PresetData.CODEC).networkSynchronized(PresetData.STREAM_CODEC));
 
+  /** Marks the upgrade that old stations got automatically; it can not be taken out. */
+  public static final Supplier<DataComponentType<Boolean>> LEGACY_UPGRADE =
+      DATA_COMPONENTS.registerComponentType(
+          "legacy_upgrade",
+          builder ->
+              builder
+                  .persistent(com.mojang.serialization.Codec.BOOL)
+                  .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.BOOL));
+
   private ModDataComponents() {}
 }
