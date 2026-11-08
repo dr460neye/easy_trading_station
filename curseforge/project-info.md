@@ -53,11 +53,9 @@ easy npc, npc, trading, villager, wandering trader, shop, station, workstation, 
 | **TODO** `images/villager.png` | A villager in a station with the name plate | |
 | **TODO** `images/config.png` | `requiredWorkstations` config example | |
 
-The description loads its two pictures from the `main` branch on GitHub
-(`raw.githubusercontent.com/dr460neye/easy_trading_station/main/curseforge/images/...`), so they
-show up once the repository has them. For the CurseForge gallery upload the files by hand.
-`title-screen.png` shows the world position at the top right of the screen; crop it out before
-publishing if you do not want that.
+The description loads its two pictures from the CurseForge media of the project (`media.forgecdn.net/attachments/2169/...`,
+uploaded to the project gallery), not from GitHub. The files in this folder are the originals.
+`title-screen.png` has the world position at the top right cropped out.
 
 ## Links to put in the description
 

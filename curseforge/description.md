@@ -7,7 +7,7 @@ and scripts keep working, the NPC stands still and costs (almost) no performance
 
 *Minecraft 26.1.2 · NeoForge · Easy NPC 7.18.0+ and Easy Villagers are optional*
 
-![Trading stations with a Wayfarer, a Jeweler and a strike sign](https://raw.githubusercontent.com/dr460neye/easy_trading_station/main/curseforge/images/title-screen.png)
+![Trading stations with a Wayfarer, a Jeweler and a strike sign](https://media.forgecdn.net/attachments/2169/908/title-screen-png.png)
 
 ---
 
@@ -45,7 +45,7 @@ in your world. Perfect for trading halls and for modpacks with quest or shop NPC
 - **Safe for scripted NPCs**: if the catcher of a captured Easy NPC is destroyed, the NPC *dies at
   its home position*, so respawn logic of the modpack keeps working. Stations survive explosions.
 
-![All trading stations of FTB Evolution 2: stone, futuristic and one for every wood](https://raw.githubusercontent.com/dr460neye/easy_trading_station/main/curseforge/images/all_trading_station.png)
+![All trading stations of FTB Evolution 2: stone, futuristic and one for every wood](https://media.forgecdn.net/attachments/2169/910/all_trading_station-png.png)
 
 *Every wood gets its own station, here the ones of FTB Evolution 2.*
 
