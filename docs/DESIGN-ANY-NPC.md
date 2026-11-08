@@ -112,9 +112,11 @@ with a new one. In a session that would create a second entity and lose the stat
   (`match=MODE`, same grammar as `typeOverrides`).
 - Never by default: players, bosses, tamed pets, anything with an owner, dragons and other large
   creatures (Ice and Fire), hostile mobs.
-- **Standard villagers can not be cloned** (decision of the maintainer; also avoids conflicts with
-  Easy Villagers). CLONE and BOTH act as CAPTURE for them, without a config switch. Other
-  non-Easy-NPC entities: clone off by default.
+- **Standard villagers can not be cloned while Easy Villagers is installed** (decision of the
+  maintainer, to avoid conflicts with it). Then CLONE and BOTH act as CAPTURE for them, without a
+  config switch. Without Easy Villagers the normal catcher mode of the config applies (default
+  CAPTURE, so cloning only happens if the pack asks for it). Other non-Easy-NPC entities: clone off
+  by default.
 
 ### 5. Workstations and upgrade tier (S7.4, M8)
 
