@@ -33,3 +33,9 @@ Each NPC needs its workstation in the station (configurable per NPC).
     versionRange="${easy_npc_version_range}"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="easy_villagers"
+    type="optional"
+    ordering="NONE"
+    side="BOTH"

@@ -126,4 +126,5 @@ jobs:
           java: ${{ steps.meta.outputs.java }}
           dependencies: |
             easy-npc(required){curseforge:easy-npc}
+            easy-villagers(optional){curseforge:easy-villagers}
           fail-mode: fail

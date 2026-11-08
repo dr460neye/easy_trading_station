@@ -116,7 +116,7 @@ the GitHub release was created (for example the CurseForge upload), delete the r
 3. Writes the release notes, creates the tag on the built commit and the **GitHub release**
    with the jar.
 4. Uploads the same jar to **CurseForge** (if requested) with game version, loader `neoforge`,
-   Java version, release type, changelog and the required dependency *Easy NPC*.
+   Java version, release type, changelog, the required dependency *Easy NPC* and the optional dependency *Easy Villagers*.
 
 **Release** and **Pre-release** only decide the version and whether CurseForge is used.
 
