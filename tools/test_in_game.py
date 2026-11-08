@@ -2,10 +2,15 @@
 starts the instance and loads the singleplayer world straight away, then waits until the player is
 in the world. Paths come from tools/local.json.
 
-Usage: python tools/test_in_game.py [world_folder_name] [--no-deploy] [--timeout SECONDS]
+Usage: python tools/test_in_game.py [world_folder_name] [--no-deploy] [--close] [--timeout SECONDS]
+
+--close  if the game is running, close it the way the window's X does (the world is saved, as when
+         you quit yourself), wait until it has ended and carry on. Without --close a running game
+         stops the script. The game is never killed: if it does not end by itself the script stops
+         with exit code 3.
 
 Exit codes: 0 player is in the world, 1 start failed or the game ended early, 2 timeout,
-3 the game is already running (it is never stopped by this script)."""
+3 the game is running and was not closed."""
 import json
 import os
 import re
@@ -37,6 +42,31 @@ def game_running(instance_name):
     return bool(out)
 
 
+def close_running(instance_name, wait=180):
+    """Asks the running game to close like the window's X button (saves the world). Never kills."""
+    script = (
+        "Get-CimInstance Win32_Process -Filter \"Name='javaw.exe'\" | "
+        "Where-Object { $_.CommandLine -like '*" + instance_name.replace("'", "''") + "*' } | "
+        "ForEach-Object { $p = Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue; "
+        "if ($p -and $p.MainWindowHandle -ne 0) { [void]$p.CloseMainWindow(); 'asked' } else { 'nowindow' } }"
+    )
+    out = subprocess.run(
+        ["powershell", "-NoProfile", "-Command", script], capture_output=True, text=True
+    ).stdout.split()
+    if "nowindow" in out and "asked" not in out:
+        print("The game has no window I can close. Close it yourself (X or Save and Quit).")
+        return False
+    print("Asked the game to close and save, waiting ...", flush=True)
+    end = time.time() + wait
+    while time.time() < end:
+        if not game_running(instance_name):
+            print("The game has ended.")
+            return True
+        time.sleep(3)
+    print(f"The game is still running after {wait} s (a dialog or a long save?). Not killed.")
+    return False
+
+
 def main():
     try:
         config = json.load(open(os.path.join(ROOT, "local.json"), encoding="utf-8"))
@@ -48,8 +78,11 @@ def main():
     timeout = int(arg_value("--timeout", "600"))
 
     if game_running(os.path.basename(instance)):
-        print("The game is running. Close it first (this script never stops it).")
-        return 3
+        if "--close" not in sys.argv:
+            print("The game is running. Close it first, or use --close to save and close it.")
+            return 3
+        if not close_running(os.path.basename(instance)):
+            return 3
 
     if "--no-deploy" not in sys.argv:
         print("Building and deploying ...", flush=True)
