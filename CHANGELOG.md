@@ -19,6 +19,7 @@ release. Put the most important entries first and keep a bullet's first sentence
   share one entity type, so names are the way to treat individual shopkeepers differently.
 
 ### Fixed
+- NPCs in claimed or otherwise protected chunks can no longer be caught: the catcher now respects claim and protection mods (such as FTB Chunks).
 - Workstations made of two parts (doors, tall plants, beds) are shown completely; they are scaled to stay inside the front cell of the booth.
 
 ### Changed
