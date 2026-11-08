@@ -39,6 +39,7 @@ public class TradingStationBlockEntity extends BlockEntity {
   private boolean inUse;
   private net.minecraft.network.chat.Component missingLabel;
   private String idleKind = "";
+  private net.minecraft.network.chat.Component title;
 
   /** Client only: cached non-ticking entity for the renderer, rebuilt when {@link #version} changes. */
   public Entity displayEntity;
@@ -106,6 +107,17 @@ public class TradingStationBlockEntity extends BlockEntity {
   private boolean requirementMet() {
     WorkstationRequirement requirement = requirement();
     return requirement == null || requirement.matches(workstation);
+  }
+
+  /** Text for the front frame of the station (server computes it, the client gets a copy). */
+  public net.minecraft.network.chat.Component getTitle() {
+    if (npc == null) {
+      return null;
+    }
+    if (level != null && !level.isClientSide()) {
+      return StationNpc.title(npc);
+    }
+    return title;
   }
 
   /** Villager without trades ("unemployed" or "nitwit"): server computes it, the client gets a copy. */
@@ -234,6 +246,9 @@ public class TradingStationBlockEntity extends BlockEntity {
       if (!idle.isEmpty()) {
         output.putString("IdleKind", idle);
       }
+      if (npc != null) {
+        output.store("Title", net.minecraft.network.chat.ComponentSerialization.CODEC, StationNpc.title(npc));
+      }
       WorkstationRequirement requirement = requirement();
       if (requirement != null && !requirement.matches(workstation)) {
         output.store("MissingLabel", net.minecraft.network.chat.ComponentSerialization.CODEC, requirement.displayName());
@@ -253,6 +268,7 @@ public class TradingStationBlockEntity extends BlockEntity {
     displayWorkstation = input.getString("DisplayWorkstation").map(Identifier::tryParse).orElse(null);
     inUse = input.getBooleanOr("InUse", false);
     idleKind = input.getStringOr("IdleKind", "");
+    title = input.read("Title", net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(null);
     missingLabel = input.read("MissingLabel", net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(null);
     version++;
   }

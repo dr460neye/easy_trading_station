@@ -20,6 +20,7 @@ First release for Minecraft 26.1.2, NeoForge 26.1.2.126, Easy NPC 7.18.0+.
 ### Added
 - **NPC Catcher**: capture or clone Easy NPCs, standard villagers (any profession, also from other mods) and wandering traders. Modes `CAPTURE`, `CLONE`, `BOTH`, `DISABLED`, globally, per NPC type and per NPC name.
 - **Trading Station**: 1 × 2 × 2 glass booth with podium, access window and workstation spot. 13 styles (futuristic, stone, 11 vanilla woods); stations for the woods of other mods appear automatically.
+- **Name plate**: the upper front frame of a station shows who lives in it: the NPC's name, or the profession of a villager.
 - **Station menu** (Shift + right-click) with a catcher slot, a workstation slot and an upgrade slot.
 - **Station upgrades**: Easy NPCs need the *Advanced NPC Trading Station Upgrade*, wandering traders the *Wandering Trader Upgrade* (new offers once a day). Standard villagers need none. Recipes and the requirement per NPC are configurable; right-click a station with an upgrade to install it.
 - Villagers without a profession and nitwits show a sign in the station instead of shaking their head (no session, no block checks). A released villager keeps its profession and its memories (job site), and gets no free experience.

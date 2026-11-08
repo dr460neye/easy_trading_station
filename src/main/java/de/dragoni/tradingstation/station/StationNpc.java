@@ -3,6 +3,7 @@ package de.dragoni.tradingstation.station;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
@@ -132,5 +133,38 @@ public final class StationNpc {
     entity.setYRot(yaw + 180.0F);
     entity.setOldPosAndRot();
     return level.addFreshEntity(entity);
+  }
+
+  /**
+   * The text shown on the front frame of the station: the own name of the NPC if it has one, for a
+   * villager its profession, otherwise the name of the entity type.
+   */
+  public static net.minecraft.network.chat.Component title(
+      de.markusbordihn.easynpc.data.preset.PresetData data) {
+    var named = de.dragoni.tradingstation.item.NpcCatcherItem.nameComponent(data);
+    if (named != null) {
+      return named;
+    }
+    if (data.entityType() == net.minecraft.world.entity.EntityType.VILLAGER) {
+      Identifier profession = VillagerWorkstations.professionOf(data.data());
+      String key =
+          "entity.minecraft.villager."
+              + (profession.getNamespace().equals("minecraft")
+                  ? profession.getPath()
+                  : profession.getNamespace() + "." + profession.getPath());
+      return net.minecraft.network.chat.Component.translatableWithFallback(key, prettify(profession.getPath()));
+    }
+    return data.entityType().getDescription();
+  }
+
+  /** "fluix_researcher" -> "Fluix Researcher" (used when a profession has no translation). */
+  static String prettify(String path) {
+    StringBuilder out = new StringBuilder();
+    for (String word : path.split("[_./]")) {
+      if (!word.isEmpty()) {
+        out.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1)).append(' ');
+      }
+    }
+    return out.toString().strip();
   }
 }

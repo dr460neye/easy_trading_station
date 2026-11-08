@@ -53,9 +53,14 @@ public class TradingStationRenderer
     boolean hasWorkstation;
     java.util.List<net.minecraft.util.FormattedCharSequence> sign = java.util.List.of();
     float signAngle;
+    net.minecraft.util.FormattedCharSequence title;
+    float titleScale;
+    float faceAngle;
   }
 
   private static final float WORKSTATION_SCALE = 0.8F;
+  private static final float TITLE_SCALE = 0.0125F;
+  private static final float TITLE_MAX_WIDTH = 0.8F;
   /** Largest footprint (of one cell) and height (of the booth) a workstation may take after scaling. */
   private static final float MAX_FOOTPRINT = 0.9F;
   private static final float MAX_HEIGHT = 1.8F;
@@ -115,6 +120,14 @@ public class TradingStationRenderer
       station.displayEntity = null;
     }
 
+    state.faceAngle = (float) Math.toDegrees(Math.atan2(facing.getStepX(), facing.getStepZ()));
+    state.title = null;
+    if (station.hasNpc() && station.getTitle() != null) {
+      var font = net.minecraft.client.Minecraft.getInstance().font;
+      state.title = station.getTitle().getVisualOrderText();
+      // the frame is 14/16 of a block wide; long names get smaller
+      state.titleScale = Math.min(TITLE_SCALE, TITLE_MAX_WIDTH / Math.max(font.width(state.title), 1));
+    }
     state.sign = java.util.List.of();
     if (station.hasNpc() && !station.getIdleKind().isEmpty()) {
       var font = net.minecraft.client.Minecraft.getInstance().font;
@@ -237,6 +250,27 @@ public class TradingStationRenderer
             0xFF7A4A1E,
             0);
       }
+      pose.popPose();
+    }
+    if (state.title != null) {
+      var font = net.minecraft.client.Minecraft.getInstance().font;
+      pose.pushPose();
+      // centre of the upper front frame, just outside the front face
+      pose.translate(0.5 + state.frontOffsetX, 1.875, 0.5 + state.frontOffsetZ);
+      pose.mulPose(Axis.YP.rotationDegrees(state.faceAngle));
+      pose.translate(0.0, 0.0, 0.506);
+      pose.scale(state.titleScale, -state.titleScale, state.titleScale);
+      collector.submitText(
+          pose,
+          -font.width(state.title) / 2.0F,
+          -4.0F,
+          state.title,
+          true,
+          net.minecraft.client.gui.Font.DisplayMode.NORMAL,
+          state.lightCoords,
+          0xFFFFFFFF,
+          0,
+          0);
       pose.popPose();
     }
     if (state.hasWorkstation) {

@@ -160,6 +160,12 @@ public class NpcCatcherItem extends Item {
     return InteractionResult.FAIL;
   }
 
+  /** The NPC's own name as a component, null if it has none. */
+  public static Component nameComponent(PresetData data) {
+    Component name = customName(data.data(), 0);
+    return name == null || name.getString().isBlank() ? null : name;
+  }
+
   /** Plain text of the NPC's name (or its translation key); empty if unnamed. */
   public static String npcName(PresetData data) {
     Component name = customName(data.data(), 0);

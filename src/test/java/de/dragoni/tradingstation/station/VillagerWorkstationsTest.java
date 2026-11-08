@@ -44,4 +44,10 @@ class VillagerWorkstationsTest {
     assertEquals("", VillagerWorkstations.idleKind(villagerWith("minecraft:farmer")));
     assertEquals("", VillagerWorkstations.idleKind(villagerWith("irons_jewelry:jeweler")));
   }
+
+  @Test
+  void professionsWithoutTranslationGetAReadableName() {
+    assertEquals("Fluix Researcher", StationNpc.prettify("fluix_researcher"));
+    assertEquals("Jeweler", StationNpc.prettify("jeweler"));
+  }
 }
