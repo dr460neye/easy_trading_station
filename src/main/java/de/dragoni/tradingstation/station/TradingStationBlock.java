@@ -2,6 +2,7 @@ package de.dragoni.tradingstation.station;
 
 import com.mojang.serialization.MapCodec;
 import de.dragoni.tradingstation.item.NpcCatcherItem;
+import de.dragoni.tradingstation.item.StationUpgradeItem;
 import de.dragoni.tradingstation.registry.ModDataComponents;
 import de.markusbordihn.easynpc.data.preset.PresetData;
 import net.minecraft.core.BlockPos;
@@ -183,6 +184,9 @@ public class TradingStationBlock extends Block implements EntityBlock {
     if (player.isShiftKeyDown()) {
       return openMenu(player, station);
     }
+    if (stack.getItem() instanceof StationUpgradeItem) {
+      return installUpgrade(player, station, stack, level);
+    }
     PresetData carried =
         stack.getItem() instanceof NpcCatcherItem ? NpcCatcherItem.getNpc(stack) : null;
     if (carried != null) {
@@ -209,6 +213,33 @@ public class TradingStationBlock extends Block implements EntityBlock {
       return InteractionResult.SUCCESS_SERVER;
     }
     return InteractionResult.TRY_WITH_EMPTY_HAND;
+  }
+
+  /** Right-click with an upgrade: it goes into the upgrade slot if that is free. */
+  private static InteractionResult installUpgrade(
+      Player player, TradingStationBlockEntity station, ItemStack stack, Level level) {
+    if (level.isClientSide()) {
+      return InteractionResult.SUCCESS;
+    }
+    if (!station.getUpgrade().isEmpty()) {
+      message(player, "upgrade_present");
+      return InteractionResult.FAIL;
+    }
+    String kind = StationUpgradeItem.kindOf(stack);
+    if (station.hasNpc()) {
+      String needed =
+          StationContainer.requiredUpgrade(NpcCatcherItem.filled(station.getNpc()));
+      if (!de.dragoni.tradingstation.config.UpgradeRules.satisfied(needed, kind)) {
+        message(player, "upgrade_mismatch");
+        return InteractionResult.FAIL;
+      }
+    }
+    station.setUpgrade(stack.copyWithCount(1));
+    if (!player.getAbilities().instabuild) {
+      stack.shrink(1);
+    }
+    message(player, "upgrade_installed");
+    return InteractionResult.SUCCESS_SERVER;
   }
 
   private static InteractionResult openMenu(Player player, TradingStationBlockEntity station) {

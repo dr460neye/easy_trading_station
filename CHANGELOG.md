@@ -14,7 +14,7 @@ release. Put the most important entries first and keep a bullet's first sentence
 ## [Unreleased]
 
 ### Added
-- **Station upgrades**: a third slot in the station menu. Easy NPCs need the new **Advanced NPC Trading Station Upgrade** (crafted from emeralds, an emerald block, a netherite ingot, a redstone block, a gold block and three mob heads; recipe configurable). The `[upgrades]` section of the server config turns the requirement off or sets it per NPC. Stations that already hold an Easy NPC keep working: they get the upgrade automatically (it stays in the station).
+- **Station upgrades**: a third slot in the station menu. Easy NPCs need the new **Advanced NPC Trading Station Upgrade** (crafted from emeralds, an emerald block, a netherite ingot, a redstone block, a gold block and three mob heads; recipe configurable). The `[upgrades]` section of the server config turns the requirement off or sets it per NPC. Right-click a station with the upgrade in hand to install it straight away (Shift + right-click opens the menu). Stations that already hold an Easy NPC keep working: they get the upgrade automatically (it stays in the station).
 - **Catcher mode per NPC name**: `typeOverrides` entries now match an NPC name as well as an entity
   type id (`"beastmaster=BOTH"`, `"wayfarer=CAPTURE"`, `"jeweler=CLONE"`). All Easy NPC humanoids
   share one entity type, so names are the way to treat individual shopkeepers differently.

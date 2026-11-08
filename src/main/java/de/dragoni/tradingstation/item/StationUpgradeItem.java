@@ -31,6 +31,17 @@ public class StationUpgradeItem extends Item {
     return Boolean.TRUE.equals(stack.get(ModDataComponents.LEGACY_UPGRADE.get()));
   }
 
+  /** Lets Shift + right-click with an upgrade in hand reach the station menu. */
+  @Override
+  public boolean doesSneakBypassUse(
+      ItemStack stack,
+      net.minecraft.world.level.LevelReader level,
+      net.minecraft.core.BlockPos pos,
+      net.minecraft.world.entity.player.Player player) {
+    return level.getBlockState(pos).getBlock()
+        instanceof de.dragoni.tradingstation.station.TradingStationBlock;
+  }
+
   @Override
   public void appendHoverText(
       ItemStack stack,
