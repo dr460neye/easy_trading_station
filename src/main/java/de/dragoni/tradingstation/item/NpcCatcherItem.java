@@ -12,6 +12,8 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.security.SecurityManager;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -50,6 +52,10 @@ public class NpcCatcherItem extends Item {
     if (!(target instanceof EasyNPC<?> npc)) {
       return InteractionResult.PASS;
     }
+    if (isProtected(player, target)) {
+      player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.no_access"));
+      return InteractionResult.FAIL;
+    }
     PresetData data = PresetData.get(PresetDataUtils.toItemStack(npc));
     String name = data == null ? "" : npcName(data);
     CatcherMode mode = TradingStationConfig.modeFor(target.getType(), name);
@@ -86,6 +92,18 @@ public class NpcCatcherItem extends Item {
       target.discard();
     }
     return InteractionResult.SUCCESS;
+  }
+
+  /**
+   * Asks claim and protection mods whether this player may change things where the NPC stands, by
+   * posting the break-block event for that position (the same question they answer for breaking
+   * blocks; the event is only asked, nothing is broken).
+   */
+  private static boolean isProtected(ServerPlayer player, Entity target) {
+    var level = target.level();
+    BlockPos pos = target.blockPosition();
+    var event = new BreakBlockEvent(level, pos, level.getBlockState(pos), player);
+    return NeoForge.EVENT_BUS.post(event).isCanceled();
   }
 
   /** The catcher is used up once its NPC left it (creative keeps an empty one). */

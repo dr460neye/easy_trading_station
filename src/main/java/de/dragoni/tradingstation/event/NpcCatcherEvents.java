@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -19,11 +18,11 @@ public class NpcCatcherEvents {
   private NpcCatcherEvents() {}
 
   /**
-   * Runs before the NPC's own interaction (dialog, trading), so an empty catcher wins over it. Last
-   * among the event listeners on purpose: claim and protection mods (FTB Chunks and others) cancel
-   * the event first, and a canceled event never reaches this method.
+   * Runs before the NPC's own interaction (dialog, trading), so an empty catcher wins over it. Not
+   * last in line: shop scripts (KubeJS) cancel this event for shopkeepers and the catcher would
+   * never be reached. Claims are checked in {@link NpcCatcherItem#capture}.
    */
-  @SubscribeEvent(priority = EventPriority.LOWEST)
+  @SubscribeEvent
   public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
     var stack = event.getItemStack();
     if (!(stack.getItem() instanceof NpcCatcherItem)) {

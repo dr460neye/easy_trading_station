@@ -20,7 +20,7 @@ release. Put the most important entries first and keep a bullet's first sentence
 
 ### Fixed
 - More modded woods get a station automatically: every planks block in another mod's `minecraft:planks` tag is found, not only registered wood types (for example Menril, Rowan, Alder, Hawthorn, Occultism's Otherworld wood).
-- NPCs in claimed or otherwise protected chunks can no longer be caught: the catcher now respects claim and protection mods (such as FTB Chunks).
+- NPCs in claimed or otherwise protected areas can no longer be caught: the catcher asks claim and protection mods first, in the same way as for breaking a block there.
 - Workstations made of two parts (doors, tall plants, beds) are shown completely; they are scaled to stay inside the front cell of the booth.
 
 ### Changed
