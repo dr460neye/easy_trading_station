@@ -18,6 +18,9 @@ release. Put the most important entries first and keep a bullet's first sentence
   type id (`"beastmaster=BOTH"`, `"wayfarer=CAPTURE"`, `"jeweler=CLONE"`). All Easy NPC humanoids
   share one entity type, so names are the way to treat individual shopkeepers differently.
 
+### Fixed
+- Workstations made of two parts (doors, tall plants, beds) are shown completely; they are scaled to stay inside the front cell of the booth.
+
 ### Changed
 - Station menu: the two slots are stacked with their labels to the right, so the texts no longer overlap.
 - When a released NPC can not be spawned, the reason is written to `latest.log`.

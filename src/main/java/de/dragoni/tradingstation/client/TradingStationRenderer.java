@@ -25,6 +25,9 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
 
 /** Draws the NPC (cached, never ticking, never added to the level) and the workstation. */
@@ -34,6 +37,15 @@ public class TradingStationRenderer
   public static class State extends BlockEntityRenderState {
     EntityRenderState npc;
     final BlockModelRenderState workstation = new BlockModelRenderState();
+    // second half of a two-part block (door, tall plant, bed) and where it sits relative to the first
+    final BlockModelRenderState workstationExtra = new BlockModelRenderState();
+    boolean hasExtra;
+    float extraX;
+    float extraY;
+    float extraZ;
+    float fitScale = WORKSTATION_SCALE;
+    float centerX = 0.5F;
+    float centerZ = 0.5F;
     float yaw;
     float npcScale = 1.0F;
     float frontOffsetX;
@@ -42,6 +54,11 @@ public class TradingStationRenderer
     java.util.List<net.minecraft.util.FormattedCharSequence> sign = java.util.List.of();
     float signAngle;
   }
+
+  private static final float WORKSTATION_SCALE = 0.8F;
+  /** Largest footprint (of one cell) and height (of the booth) a workstation may take after scaling. */
+  private static final float MAX_FOOTPRINT = 0.9F;
+  private static final float MAX_HEIGHT = 1.8F;
 
   private final EntityRenderDispatcher entityRenderer;
   private final BlockModelResolver blockModels;
@@ -115,13 +132,62 @@ public class TradingStationRenderer
       state.signAngle = (float) Math.toDegrees(Math.atan2(facing.getStepX(), facing.getStepZ()));
     }
     state.hasWorkstation = false;
+    state.hasExtra = false;
     if (station.getDisplayWorkstation() != null) {
       Block block = BuiltInRegistries.BLOCK.getValue(station.getDisplayWorkstation());
       if (block != Blocks.AIR) {
-        blockModels.update(state.workstation, block.defaultBlockState(), BlockDisplayContext.create());
-        state.hasWorkstation = !state.workstation.isEmpty();
+        prepareWorkstation(state, block.defaultBlockState());
       }
     }
+  }
+
+  /**
+   * Draws the default state and, for blocks made of two parts, the other half next to it. Two-part
+   * blocks are shrunk so that the whole thing stays inside the front cell of the booth.
+   */
+  private void prepareWorkstation(State state, BlockState base) {
+    BlockState extra = null;
+    float dx = 0;
+    float dy = 0;
+    float dz = 0;
+    float width = 1;
+    float depth = 1;
+    float height = 1;
+    float minZ = 0;
+    if (base.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) {
+      // doors, tall plants: lower half at the origin, upper half one block higher
+      base = base.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER);
+      extra = base.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER);
+      dy = 1;
+      height = 2;
+    } else if (base.hasProperty(BlockStateProperties.BED_PART)
+        && base.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+      // beds: the head lies one block in the facing direction of the foot
+      Direction headDirection = base.getValue(BlockStateProperties.HORIZONTAL_FACING);
+      base = base.setValue(BlockStateProperties.BED_PART, BedPart.FOOT);
+      extra = base.setValue(BlockStateProperties.BED_PART, BedPart.HEAD);
+      dx = headDirection.getStepX();
+      dz = headDirection.getStepZ();
+      width = dx != 0 ? 2 : 1;
+      depth = dz != 0 ? 2 : 1;
+      minZ = dz < 0 ? -1 : 0;
+    }
+    blockModels.update(state.workstation, base, BlockDisplayContext.create());
+    state.hasWorkstation = !state.workstation.isEmpty();
+    if (extra != null) {
+      blockModels.update(state.workstationExtra, extra, BlockDisplayContext.create());
+      state.hasExtra = !state.workstationExtra.isEmpty();
+    }
+    state.extraX = dx;
+    state.extraY = dy;
+    state.extraZ = dz;
+    state.fitScale =
+        Math.min(
+            WORKSTATION_SCALE,
+            Math.min(MAX_FOOTPRINT / Math.max(width, depth), MAX_HEIGHT / height));
+    float minX = dx < 0 ? -1 : 0;
+    state.centerX = minX + width / 2.0F;
+    state.centerZ = minZ + depth / 2.0F;
   }
 
   @Override
@@ -164,9 +230,13 @@ public class TradingStationRenderer
       // one cell towards the front, slightly smaller so it sits inside the glass
       pose.translate(0.5 + state.frontOffsetX, 0.0, 0.5 + state.frontOffsetZ);
       pose.mulPose(Axis.YP.rotationDegrees(-state.yaw + 180));
-      pose.scale(0.8F, 0.8F, 0.8F);
-      pose.translate(-0.5, 1.0 / 16.0, -0.5);
+      pose.scale(state.fitScale, state.fitScale, state.fitScale);
+      pose.translate(-state.centerX, 1.0 / 16.0, -state.centerZ);
       state.workstation.submit(pose, collector, state.lightCoords, 0, 0);
+      if (state.hasExtra) {
+        pose.translate(state.extraX, state.extraY, state.extraZ);
+        state.workstationExtra.submit(pose, collector, state.lightCoords, 0, 0);
+      }
       pose.popPose();
     }
   }
