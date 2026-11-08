@@ -114,6 +114,12 @@ public class NpcCatcherItem extends Item {
       consume(player, stack);
       return InteractionResult.CONSUME;
     }
+    TradingStationMod.LOGGER.warn(
+        "Release failed: type={} name='{}' valid={} at {}",
+        data.entityType(),
+        npcName(data),
+        data.hasValidData(),
+        pos);
     player.sendOverlayMessage(Component.translatable("message.easy_npc_trading_station.failed"));
     return InteractionResult.FAIL;
   }
