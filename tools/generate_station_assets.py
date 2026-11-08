@@ -123,12 +123,11 @@ def main():
                            {"condition": "minecraft:block_state_property", "block": block_id,
                             "properties": {"part": "front_low"}},
                            {"condition": "minecraft:survives_explosion"}]}]})
-        if fut:
-            pattern, key = ["GGG", "GEG", "III"], {"G": "minecraft:glass",
-                                                   "E": "minecraft:ender_pearl",
-                                                   "I": "minecraft:iron_ingot"}
-        else:
-            pattern, key = ["GGG", "G G", "PPP"], {"G": "minecraft:glass", "P": f"minecraft:{base}"}
+        # glass on top, the valuables in the middle row, the base material below
+        key = {"G": "minecraft:glass", "E": "minecraft:emerald", "Y": "minecraft:ender_eye",
+               "D": "minecraft:diamond",
+               "P": "minecraft:iron_block" if fut else f"minecraft:{base}"}
+        pattern = ["GGG", "EYD", "PPP"]
         write(os.path.join(DATA, "recipe", f"station_{vid}.json"),
               {"type": "minecraft:crafting_shaped", "category": "building", "pattern": pattern,
                "key": key, "result": {"id": block_id, "count": 1}})

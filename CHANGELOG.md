@@ -24,6 +24,7 @@ release. Put the most important entries first and keep a bullet's first sentence
 - Workstations made of two parts (doors, tall plants, beds) are shown completely; they are scaled to stay inside the front cell of the booth.
 
 ### Changed
+- Recipes are more expensive. Catcher: 3 string, 2 iron ingots, 1 ender pearl. Stations: 3 glass, emerald, eye of ender, diamond and 3 planks or stone (futuristic: 3 iron blocks).
 - Station menu: the two slots are stacked with their labels to the right, so the texts no longer overlap.
 - When a released NPC can not be spawned, the reason is written to `latest.log`.
 

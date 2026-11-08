@@ -3,13 +3,15 @@
   "category": "building",
   "pattern": [
     "GGG",
-    "GEG",
-    "III"
+    "EYD",
+    "PPP"
   ],
   "key": {
     "G": "minecraft:glass",
-    "E": "minecraft:ender_pearl",
-    "I": "minecraft:iron_ingot"
+    "E": "minecraft:emerald",
+    "Y": "minecraft:ender_eye",
+    "D": "minecraft:diamond",
+    "P": "minecraft:iron_block"
   },
   "result": {
     "id": "easy_npc_trading_station:station_futuristic",

@@ -3,12 +3,13 @@
   "category": "equipment",
   "pattern": [
     " SS",
-    " TS",
-    "T  "
+    "IPS",
+    "I  "
   ],
   "key": {
     "S": "minecraft:string",
-    "T": "minecraft:stick"
+    "I": "minecraft:iron_ingot",
+    "P": "minecraft:ender_pearl"
   },
   "result": {
     "id": "easy_npc_trading_station:npc_catcher",

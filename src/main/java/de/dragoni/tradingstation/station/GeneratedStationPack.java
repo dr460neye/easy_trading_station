@@ -209,12 +209,13 @@ public class GeneratedStationPack {
             + "\"block\":\"" + blockId + "\",\"properties\":{\"part\":\"front_low\"}},"
             + "{\"condition\":\"minecraft:survives_explosion\"}]}]}");
     if (TradingStationCommonConfig.dynamicRecipes()) {
+      // same recipe as the built-in stations: glass on top, valuables in the middle, base below
       String key =
-          variant.futuristic()
-              ? "{\"G\":\"minecraft:glass\",\"E\":\"minecraft:ender_pearl\",\"I\":\"minecraft:iron_ingot\"}"
-              : "{\"G\":\"minecraft:glass\",\"P\":\"" + variant.baseBlock() + "\"}";
-      String pattern =
-          variant.futuristic() ? "[\"GGG\",\"GEG\",\"III\"]" : "[\"GGG\",\"G G\",\"PPP\"]";
+          "{\"G\":\"minecraft:glass\",\"E\":\"minecraft:emerald\",\"Y\":\"minecraft:ender_eye\","
+              + "\"D\":\"minecraft:diamond\",\"P\":\""
+              + (variant.futuristic() ? "minecraft:iron_block" : variant.baseBlock())
+              + "\"}";
+      String pattern = "[\"GGG\",\"EYD\",\"PPP\"]";
       put(
           "data/" + NS + "/recipe/station_" + id + ".json",
           "{\"type\":\"minecraft:crafting_shaped\",\"category\":\"building\",\"pattern\":" + pattern

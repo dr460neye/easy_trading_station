@@ -41,7 +41,7 @@ clean alternative to a pile of walking villagers.
 
 | Action | Result |
 |--------|--------|
-| Craft the **NPC Catcher** (3 string + 2 sticks) | Net to catch NPCs |
+| Craft the **NPC Catcher** (3 string, 2 iron ingots, 1 ender pearl) | Net to catch NPCs |
 | Right-click an Easy NPC with the empty catcher | Capture (or clone, see config) |
 | Right-click a block with the filled catcher | Release the NPC; the catcher is used up |
 | Craft and place a **Trading Station** | 1 × 2 × 2 glass booth, faces you |

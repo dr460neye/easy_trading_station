@@ -3,11 +3,14 @@
   "category": "building",
   "pattern": [
     "GGG",
-    "G G",
+    "EYD",
     "PPP"
   ],
   "key": {
     "G": "minecraft:glass",
+    "E": "minecraft:emerald",
+    "Y": "minecraft:ender_eye",
+    "D": "minecraft:diamond",
     "P": "minecraft:cherry_planks"
   },
   "result": {

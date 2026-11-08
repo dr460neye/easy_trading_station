@@ -231,6 +231,15 @@ Disable it if you want to supply your own recipes (KubeJS, datapack). Block ids 
 
 ## Recipes for modpack makers
 
+**Default recipes** (all can be replaced with a datapack or KubeJS recipe of the same id):
+
+| Item | Recipe |
+|------|--------|
+| NPC Catcher | 3 string, 2 iron ingots, 1 ender pearl |
+| Trading Station (stone, woods, modded woods) | top row 3 glass, middle row emerald + eye of ender + diamond, bottom row 3 planks / stone (the variant's own block) |
+| Trading Station futuristic | same, with 3 iron blocks in the bottom row |
+
+
 **Find the id or name of an NPC.** Look at it in the game with `/data get entity @e[type=easy_npc:humanoid,limit=1,sort=nearest]`
 (`CustomName` is the name, the type id is the part before the `[`). With `F3 + H` the item ids of
 blocks are shown in their tooltips.
