@@ -1,7 +1,7 @@
 # Easy Trading Station
 
 NeoForge **26.1.2** (Minecraft 26.1.2, NeoForge 26.1.2.126) addon for Easy NPC 7.18.0. Target = FTB Evolution 2 modpack. NPC Catcher captures/clones an Easy NPC; the Trading Station (1x2x2 multiblock) holds it without a ticking entity.
-Mod id `easy_npc_trading_station`, package `com.oli.tradingstation`, Java 25, Mojang names (no Parchment), 2-space Google style. MC 26.1 API: `Identifier` (not ResourceLocation), `player.sendOverlayMessage`, `appendHoverText(stack, ctx, TooltipDisplay, Consumer<Component>, flag)`, items via `registerItem(...)`, every item needs `assets/<ns>/items/<id>.json`.
+Mod id `easy_npc_trading_station`, package `de.dragoni.tradingstation`, Java 25, Mojang names (no Parchment), 2-space Google style. MC 26.1 API: `Identifier` (not ResourceLocation), `player.sendOverlayMessage`, `appendHoverText(stack, ctx, TooltipDisplay, Consumer<Component>, flag)`, items via `registerItem(...)`, every item needs `assets/<ns>/items/<id>.json`.
 
 ## Read first (in this order, stop when you have enough)
 1. `docs/ROADMAP.md` – milestone status table. Work on the first open story only.
